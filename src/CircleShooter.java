@@ -15,13 +15,9 @@ import Enemy.*;
 import Utility.*;
 
 public class CircleShooter extends Game{
-
-	//Position of the ball
-	int x = 0;
-	int y = 0;
 	
 	int[][] list = {{eType.ASTEROID.ordinal(),1000},
-					{eType.SHIP.ordinal(),700}};
+					{eType.SHIP.ordinal(),0}};
 	
 	Round r1 = new Round(500,0,1500,list);
 	//Player player = new Player( WIDTH/2, HEIGHT - HEIGHT/4, HEIGHT/2);
@@ -56,12 +52,6 @@ public class CircleShooter extends Game{
 		//Clear the screen (Black)  
 		g.setColor(Color.black);  
 		g.fillRect(0,0,WIDTH,HEIGHT);
-	    //Draw a ball  
-		g.setColor(Color.red);  
-		g.fillOval(x, y, 10, 10);
-	    //Update the ball's position  
-		x += 2;  
-		y += 1;
 		
 		//Draw the Circle
 		g.setColor(Color.white);
@@ -73,15 +63,22 @@ public class CircleShooter extends Game{
 		g.fillOval(player.getX() - (10/2), player.getY() - (10/2), 10, 10);
 		
 		//Draw Enemies
+		ArrayList<Enemy> dead = new ArrayList<>();
 		for(Enemy e: enemies){
+			e.setGame(this);
 			if(e instanceof Asteroid){
-				g.setColor(Color.blue);
-				g.fillOval(e.x, e.y, 8, 8);
+				e.update(g);
 			}else if(e instanceof Ship){
 				g.setColor(Color.white);
 				g.fillRect(e.x, e.y, 5, 5);
 			}
+			if (!e.alive) {
+				dead.add(e);
+			}
 		}
+		
+		// Remove dead enemies
+		enemies.removeAll(dead);
 		
 		//******************************************************************
 		// Sound and Audio
