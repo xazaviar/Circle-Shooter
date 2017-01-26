@@ -24,8 +24,8 @@ public class CircleShooter extends Game{
 					{eType.SHIP.ordinal(),700}};
 	
 	Round r1 = new Round(500,0,1500,list);
-	Player player = new Player( WIDTH/2, HEIGHT - HEIGHT/4, HEIGHT/2);
-	int posUpdateTicker = 0;
+	//Player player = new Player( WIDTH/2, HEIGHT - HEIGHT/4, HEIGHT/2);
+	Player player = new Player( WIDTH/2, HEIGHT/2, HEIGHT/4);
 	
 	//Game Data
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
@@ -68,13 +68,9 @@ public class CircleShooter extends Game{
 		g.drawOval((WIDTH / 2) - (HEIGHT/4), (HEIGHT/2) - (HEIGHT/4), HEIGHT/2, HEIGHT/2);
 		
 		//Draw the Player
-		posUpdateTicker++;
-		if(posUpdateTicker > 10){
-			player.updatePos();
-			posUpdateTicker = 0;
-		}
+		player.updatePos( input );
 		g.setColor(player.getColor());
-		g.fillOval(player.getX(), player.getY(), 10, 10);
+		g.fillOval(player.getX() - (10/2), player.getY() - (10/2), 10, 10);
 		
 		//Draw Enemies
 		for(Enemy e: enemies){
