@@ -17,6 +17,8 @@ public class Player {
 	private int radius;
 	
 	private int speed;
+	
+	private final int size = 20; 
 
 	//x and y are the center of the circle player travels in
 	//r is the radius of the circle
@@ -46,6 +48,10 @@ public class Player {
 	
 	public void setColor( Color c ){
 		color = c;
+	}
+	
+	public int getSize(){
+		return this.size;
 	}
 
 	/*

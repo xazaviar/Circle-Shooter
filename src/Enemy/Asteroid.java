@@ -38,16 +38,19 @@ public class Asteroid extends Enemy{
 		
 		if (super.width + super.x > super.game.WIDTH) {
 			dx *= -1;
+			damage(2);
 		}
 		if (super.x < 0) {
 			dx *= -1;
+			damage(2);
 		}
 		if (super.height + super.y > super.game.HEIGHT) {
 			dy *= -1;
+			damage(2);
 		}
 		if (super.y < 0) {
 			dy *= -1;
-			damage(1);
+			damage(2);
 		}
 	}
 }
