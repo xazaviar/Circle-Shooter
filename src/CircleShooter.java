@@ -103,8 +103,10 @@ public class CircleShooter extends Game{
 		g.drawOval((WIDTH / 2) - c_size/2, (HEIGHT/2) - c_size/2, c_size, c_size);
 		
 		//Draw the Player
+		g.drawImage(player.getSprite(), player.getRotation(), player.getX() - (player.getSprite().getWidth()/2), player.getY() - (player.getSprite().getHeight()/2));
 		g.setColor(player.getColor());
-		g.fillOval(player.getX() - (10/2), player.getY() - (10/2), player.getSize(), player.getSize());
+		g.fillOval(player.getX() - (player.getSize()/2), player.getY() - (player.getSize()/2), player.getSize(), player.getSize());
+
 		
 		//Draw the enemies
 		for(Enemy e:enemies){
