@@ -1,5 +1,7 @@
 package Utility;
 
+import java.awt.Point;
+
 import Enemy.*;
 
 public class Round {
@@ -11,10 +13,10 @@ public class Round {
 	int[] eList;			//The list of enemies to spawn and in what order
 	
 	//Predetermined Variables
-	final int xMin = 200;	//The minimum x coordinate that enemies can spawn
-	final int xMax = 400;	//The maximum x coordinate that enemies can spawn
-	final int yMin = 200;	//The minimum y coordinate that enemies can spawn
-	final int yMax = 400;	//The maximum y coordinate that enemies can spawn
+	final int xMin;			//The minimum x coordinate that enemies can spawn
+	final int xMax;			//The maximum x coordinate that enemies can spawn
+	final int yMin;			//The minimum y coordinate that enemies can spawn
+	final int yMax;			//The maximum y coordinate that enemies can spawn
 	int spawned = 0;		//The current count of enemies spawned
 	int sIndex = 0;			//The current enemy spawning index
 	int spawnRateCount = 0;	//The counter to check when an enemy can be spawned
@@ -26,14 +28,18 @@ public class Round {
 	 * 			The points awarded for completing the round
 	 * @param spawnRate
 	 * 			The rate at which enemies are allowed to spawn 
-	 * 		    (0 means every tick)
+	 * 		    (0 means every tick, 30 means every second)
 	 * @param spawnCap
 	 * 			The maximum amount of enemies on the screen
 	 * @param list
 	 * 			The list of the different types of enemies 
 	 *          allowed to spawn and how many to spawn
+	 * @param center
+	 * 			The center of the circle
+	 * @param radius
+	 * 			The radius of the circle
 	 */
-	public Round(int score, int spawnRate, int spawnCap, int[][] list){
+	public Round(int score, int spawnRate, int spawnCap, int[][] list, Point center, int radius){
 		//Initialize variables
 		this.score = score;
 		this.spawnRate = spawnRate;
@@ -56,6 +62,12 @@ public class Round {
 			this.eList[i] = list[r][0];
 			list[r][1]--;
 		}
+		
+		//Set the min and max spawning distance
+		xMin = center.x - radius/6;
+		xMax = center.x + radius/6;
+		yMin = center.y - radius/6;
+		yMax = center.y + radius/6;
 		
 	}
 	
@@ -109,7 +121,6 @@ public class Round {
 			this.sIndex++;
 			this.spawned++;
 			this.spawnRateCount = 0;
-			
 		//Increment Counter
 		}else if(this.spawned < this.spawnCap && this.sIndex < this.eList.length)
 			this.spawnRateCount++;
