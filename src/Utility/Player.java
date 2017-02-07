@@ -1,12 +1,14 @@
 package Utility;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import arcadia.Input;
 import arcadia.Button;
+import arcadia.Game;
 
 public class Player {
 	private int xPos;
@@ -26,7 +28,8 @@ public class Player {
 
 	private BufferedImage[] img;	//Array of player sprites
 	private int animState;			//Which sprite to use
-
+	
+	private int shootDelay;
 
 	//x and y are the center of the circle player travels in
 	//r is the radius of the circle
@@ -46,6 +49,7 @@ public class Player {
 		img[3] = ImageLoader.loadImage("resources/Your_Ship_RIGHT1.png");
 		img[4] = ImageLoader.loadImage("resources/Your_Ship_RIGHT2.png");
 		animState = 0;
+		shootDelay = 0;
 		//System.out.println("xPos = " + xPos + " | yPos = " + yPos);
 	}
 
@@ -105,7 +109,7 @@ public class Player {
 	 *	movement code courtesy of
 	 *	http://stackoverflow.com/questions/16802431/trouble-making-object-move-in-a-circle
 	 */
-	public void updatePos( Input input ){
+	public Bullet updatePos( Input input ){
 
 		//PRESSING LEFT
 		if( input.pressed(Button.L)){
@@ -135,6 +139,17 @@ public class Player {
 			yPos = (int)(yOrigin + radius * Math.sin(theta));
 			animState = 0;
 		}
+		//Shoot your gun
+		if( input.pressed(Button.A) && shootDelay <= 0){
+			shootDelay = 5;
+			return new Bullet(xPos, yPos, theta);
+		}
+		shootDelay--;
+		return null;
+	}
+	
+	public void draw(Graphics2D g){
+		g.drawImage(img[animState], getRotation(), xPos - (img[animState].getWidth()/2), yPos - (img[animState].getHeight()/2));
 	}
 
 }
