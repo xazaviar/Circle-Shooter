@@ -15,6 +15,8 @@ public class Enemy {
 	protected static Game game = null;
 	public boolean alive;
 	
+	private int size = 14;				//The size of the enemy
+	
 	public void setGame(Game g) {
 		if (game == null)
 			game = g;
@@ -25,7 +27,7 @@ public class Enemy {
 	 * @param g		Graphics object to draw on
 	 */
 	public void update(Graphics g) {
-		draw(g);
+		//draw(g);
 		move();
 	}
 	/**
@@ -33,7 +35,7 @@ public class Enemy {
 	 * 
 	 * @param g		Graphics object to draw on
 	 */
-	protected void draw(Graphics g) {
+	public void draw(Graphics g) {
 		g.drawImage(images[hp%2], x, y, null);
 	}
 	
@@ -57,5 +59,10 @@ public class Enemy {
 	
 	protected void die() {
 		alive = false;
+	}
+	
+
+	public int getSize(){
+		return this.size;
 	}
 }
