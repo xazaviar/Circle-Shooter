@@ -2,6 +2,7 @@ package Utility;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -109,28 +110,61 @@ public class Player {
 	 *	movement code courtesy of
 	 *	http://stackoverflow.com/questions/16802431/trouble-making-object-move-in-a-circle
 	 */
-	public Bullet updatePos( Input input ){
+	public Bullet updatePos( Input input, Ring ring ){
+		
 
 		//PRESSING LEFT
 		if( input.pressed(Button.L)){
-			theta = theta + Math.toRadians(speed);
-			xPos = (int)(xOrigin + radius * Math.cos(theta));
-			yPos = (int)(yOrigin + radius * Math.sin(theta));
-			if( animState != 3 || animState != 4 ){
-				animState = 3;
-			} else {
-				toggleState();
+			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+			
+			System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
+			if(ring.ring[(seg+1)%ring.ring.length].health!=0){
+				theta = theta + Math.toRadians(speed);
+				xPos = (int)(xOrigin + radius * Math.cos(theta));
+				yPos = (int)(yOrigin + radius * Math.sin(theta));
+				if( animState != 3 || animState != 4 ){
+					animState = 3;
+				} else {
+					toggleState();
+				}
+				
+				//Adjust if no longer on ring
+				seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+				if(ring.ring[seg].health==0){
+					for(int i = (seg-1<0?ring.ring.length-1:seg-1); i != seg; seg =(seg-1<0?ring.ring.length-1:seg-1)){
+						if(ring.ring[i].health > 0){
+							xPos = ring.ring[i].p2.x;
+							yPos = ring.ring[i].p2.y;
+						}
+					}
+				}
 			}
 		}
 		//PRESSING RIGHT
 		else if( input.pressed(Button.R)){
-			theta = theta + Math.toRadians(-speed);
-			xPos = (int)(xOrigin + radius * Math.cos(theta));
-			yPos = (int)(yOrigin + radius * Math.sin(theta));
-			if( animState != 1 || animState != 2 ){
-				animState = 1;
-			} else {
-				toggleState();
+			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+
+			System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
+			if(ring.ring[seg].health!=0){
+				theta = theta + Math.toRadians(-speed);
+				xPos = (int)(xOrigin + radius * Math.cos(theta));
+				yPos = (int)(yOrigin + radius * Math.sin(theta));
+				if( animState != 1 || animState != 2 ){
+					animState = 1;
+				} else {
+					toggleState();
+				}
+				
+				//Adjust if no longer on ring
+				seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+				if(ring.ring[seg].health==0){
+					for(int i = (seg+1)%ring.ring.length; i != seg; seg=(seg+1)%ring.ring.length){
+						if(ring.ring[i].health > 0){
+							xPos = ring.ring[i].p1.x;
+							yPos = ring.ring[i].p1.y;
+						}
+					}
+				}
 			}
 		}
 		//NO MOVEMENT

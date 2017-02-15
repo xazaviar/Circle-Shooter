@@ -26,8 +26,11 @@ public class CircleShooter extends Game{
 
 	Round r1 = new Round(500,15,1500,list, new Point((WIDTH/2), (HEIGHT/2)),c_size/2);
 	//x origin of circle, y origin of circle, radius of circle, game reference//
+	
+	
 	Player player = new Player( (WIDTH / 2), (HEIGHT/2), c_size/2 );
-
+	Ring ring = new Ring(45,2,c_size,WIDTH,HEIGHT);
+	
 	//Game Data
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
@@ -48,7 +51,7 @@ public class CircleShooter extends Game{
 			//******************************************************************
 
 			//Move Player & get new Bullets
-			Bullet nullCheck = player.updatePos( input );
+			Bullet nullCheck = player.updatePos( input, ring );
 			if( nullCheck != null ) playerBullets.add( nullCheck );
 
 			ArrayList<Bullet> spent = new ArrayList<>();
@@ -73,12 +76,20 @@ public class CircleShooter extends Game{
 					dead.add(e);
 				}
 
-				//Check for collision
+				//Check for collision with player
 				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize())){
 					lives--;
 					dead.add(e);
 					//Player respawn [will need to be discussed]
 				}
+				
+				//Check for ring collision
+				int rC = Calc.ringCollide(new Point(e.x,e.y), e.getSize(), ring);
+				if(rC>-1){
+					dead.add(e);
+					ring.ringSegDamage(rC);
+				}
+				
 				for( Bullet b: playerBullets ){
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
 						dead.add(e);
@@ -116,10 +127,8 @@ public class CircleShooter extends Game{
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
 			g.drawString("LIVES: "+lives, WIDTH-125, 25);
 
-			//Draw the Circle
-			g.setColor(Color.white);
-			//g.drawOval(WIDTH-550, 25, 500, 500);
-			g.drawOval((WIDTH / 2) - c_size/2, (HEIGHT/2) - c_size/2, c_size, c_size);
+			//Draw the Ring
+			ring.draw(g,WIDTH,HEIGHT);
 
 			//Draw the Player
 			player.draw(g);
