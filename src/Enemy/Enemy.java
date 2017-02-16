@@ -1,6 +1,6 @@
 package Enemy;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import arcadia.Game;
@@ -26,7 +26,7 @@ public class Enemy {
 	 * 
 	 * @param g		Graphics object to draw on
 	 */
-	public void update(Graphics g) {
+	public void update() {
 		//draw(g);
 		move();
 	}
@@ -35,7 +35,7 @@ public class Enemy {
 	 * 
 	 * @param g		Graphics object to draw on
 	 */
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 		g.drawImage(images[hp%2], x, y, null);
 	}
 	
