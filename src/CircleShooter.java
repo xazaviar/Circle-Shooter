@@ -21,8 +21,8 @@ public class CircleShooter extends Game{
 	final int c_size = 500;	//The size of the circle
 	int lives = 3;
 
-	int[][] list = {{eType.ASTEROID.ordinal(),1000},
-			{eType.SHIP.ordinal(),0}};
+	int[][] list = {{eType.ASTEROID.ordinal(),0},
+			{eType.SHIP.ordinal(),4}};
 
 	Round r1 = new Round(500,15,1500,list, new Point((WIDTH/2), (HEIGHT/2)),c_size/2);
 	//x origin of circle, y origin of circle, radius of circle, game reference//
@@ -34,6 +34,7 @@ public class CircleShooter extends Game{
 	//Game Data
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
+	public ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	boolean roundOver = false;
 	boolean gameOver = false;
 
@@ -61,16 +62,27 @@ public class CircleShooter extends Game{
 					spent.add(b);
 				}
 			}
+			
+			for (Bullet b : enemyBullets) {
+				b.update();
+				if (!b.getAlive()) {
+					spent.add(b);
+				}
+			}
 
 			//Draw and move Enemies
 			ArrayList<Enemy> dead = new ArrayList<>();
 			for(Enemy e: enemies){
 				//e.setGame(this);
 				if(e instanceof Asteroid){
-					e.update(g);
+					e.update();
 				}else if(e instanceof Ship){
-					g.setColor(Color.white);
-					g.fillRect(e.x, e.y, 5, 5);
+					((Ship) e).getTarget(player.getX(), player.getY());
+					e.update();
+					/*Bullet shot = ((Ship) e).fire();
+					if (shot != null) {
+						enemyBullets.add(shot);
+					}*/
 				}
 				if (!e.alive) {
 					dead.add(e);
@@ -140,6 +152,10 @@ public class CircleShooter extends Game{
 			//Draw the enemies
 			for(Enemy e:enemies){
 				e.draw(g);
+			}
+			
+			for (Bullet b : enemyBullets) {
+				b.draw(g);
 			}
 
 
