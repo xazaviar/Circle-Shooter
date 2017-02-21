@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 
 import arcadia.Input;
 import arcadia.Button;
-import arcadia.Game;
 
 public class Player {
 	private int xPos;
@@ -178,7 +177,7 @@ public class Player {
 			shootDelay = 5;
 			return new Bullet(xPos, yPos, theta);
 		}
-		shootDelay--;
+		shootDelay--; //possible underflow
 		return null;
 	}
 	
