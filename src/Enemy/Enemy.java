@@ -16,6 +16,7 @@ public class Enemy {
 	public boolean alive;
 	
 	private int size = 14;				//The size of the enemy
+	protected int points;				//The points for the enemy
 	
 	public void setGame(Game g) {
 		if (game == null)
@@ -64,5 +65,9 @@ public class Enemy {
 
 	public int getSize(){
 		return this.size;
+	}
+	
+	public int getPoints(){
+		return this.points;
 	}
 }

@@ -18,17 +18,19 @@ public class Ship extends Enemy{
 	private int delay = 0;
 	private double thetaS, thetaO;
 	
-	public Ship(int x, int y){
+	public Ship(int x, int y, int points){
 		super.name = "Ship";
 		super.x = x;
 		super.y = y;
 		super.dx = 0;
 		super.dy = 0;
 		super.images = new BufferedImage[2];
-		super.images[0] = ImageLoader.loadImage("resources/Enemy_Ship_STILL.png");
-		super.images[1] = ImageLoader.loadImage("resources/Enemy_Ship_STILL.png");
+		super.images[0] = ImageLoader.loadImage("resources/Images/Enemy_Ship_STILL.png");
+		super.images[1] = ImageLoader.loadImage("resources/Images/Enemy_Ship_STILL.png");
 		super.hp = 2;
 		super.alive = true;
+		
+		super.points = points;
 		
 		targetX = 0;
 		targetY = 0;
