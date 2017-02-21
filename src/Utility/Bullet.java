@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-public class Bullet {
+public class Bullet implements Weapon{
 	
 	private int xPos;
 	private int yPos;
