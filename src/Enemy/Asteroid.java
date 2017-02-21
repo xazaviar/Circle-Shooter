@@ -10,16 +10,18 @@ import Utility.ImageLoader;
 
 public class Asteroid extends Enemy{
 
-	public Asteroid(int x, int y){
+	public Asteroid(int x, int y, int points){
 		super.name = "Asteroid";
-		super.images[0] = ImageLoader.loadImage("resources/Enemy/asteroidTemp.jpg");
-		super.images[1] = ImageLoader.loadImage("resources/Enemy/asteroidDamagedTemp.jpg");
+		super.images[0] = ImageLoader.loadImage("resources/Images/Enemy/asteroidTemp.jpg");
+		super.images[1] = ImageLoader.loadImage("resources/Images/Enemy/asteroidDamagedTemp.jpg");
 		super.x = x;
 		super.y = y;
 		super.width = images[0].getWidth();
 		super.height = images[0].getHeight();
 		super.alive = true;
 		super.hp = 2;
+		
+		super.points = points;
 
 		// Random direction and speed
 		Random rand = new Random();
@@ -34,20 +36,16 @@ public class Asteroid extends Enemy{
 		super.move();
 		
 		if (super.width + super.x > super.game.WIDTH) {
-			dx *= -1;
-			damage(2);
+			this.alive = false;
 		}
 		if (super.x < 0) {
-			dx *= -1;
-			damage(2);
+			this.alive = false;
 		}
 		if (super.height + super.y > super.game.HEIGHT) {
-			dy *= -1;
-			damage(2);
+			this.alive = false;
 		}
 		if (super.y < 0) {
-			dy *= -1;
-			damage(2);
+			this.alive = false;
 		}
 	}
 }
