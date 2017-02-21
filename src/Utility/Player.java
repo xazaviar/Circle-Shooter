@@ -43,11 +43,11 @@ public class Player {
 		radius = r;
 		speed = 4;
 		img = new BufferedImage[5];
-		img[0] = ImageLoader.loadImage("resources/Your_Ship_STILL.png");
-		img[1] = ImageLoader.loadImage("resources/Your_Ship_LEFT1.png");
-		img[2] = ImageLoader.loadImage("resources/Your_Ship_LEFT2.png");
-		img[3] = ImageLoader.loadImage("resources/Your_Ship_RIGHT1.png");
-		img[4] = ImageLoader.loadImage("resources/Your_Ship_RIGHT2.png");
+		img[0] = ImageLoader.loadImage("resources/Images/Your_Ship_STILL.png");
+		img[1] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT1.png");
+		img[2] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT2.png");
+		img[3] = ImageLoader.loadImage("resources/Images/Your_Ship_RIGHT1.png");
+		img[4] = ImageLoader.loadImage("resources/Images/Your_Ship_RIGHT2.png");
 		animState = 0;
 		shootDelay = 0;
 		//System.out.println("xPos = " + xPos + " | yPos = " + yPos);
@@ -116,7 +116,7 @@ public class Player {
 		if( input.pressed(Button.L)){
 			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 			
-			System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
+			//System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
 			if(ring.ring[(seg+1)%ring.ring.length].health!=0){
 				theta = theta + Math.toRadians(speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -143,7 +143,7 @@ public class Player {
 		else if( input.pressed(Button.R)){
 			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 
-			System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
+			//System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
 			if(ring.ring[seg].health!=0){
 				theta = theta + Math.toRadians(-speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -173,7 +173,7 @@ public class Player {
 			animState = 0;
 		}
 		//Shoot your gun
-		if( input.pressed(Button.A) && shootDelay <= 0){
+		if( input.pressed(Button.U) && shootDelay <= 0){
 			shootDelay = 5;
 			return new Bullet(xPos, yPos, theta);
 		}
