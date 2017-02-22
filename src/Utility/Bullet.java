@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-public class Bullet {
+public class Bullet implements Weapon{
 	
 	private int xPos;
 	private int yPos;
@@ -14,6 +14,7 @@ public class Bullet {
 	
 	private int speed;
 	private int dist;
+	private final int MAX_DIST = 1500;
 	
 	private boolean alive;
 	
@@ -33,14 +34,14 @@ public class Bullet {
 		theta = t;
 		speed = 5;
 		alive = true;
-		img = ImageLoader.loadImage("resources/Your_Ship_Bullet_N.png");
+		img = ImageLoader.loadImage("resources/Images/Your_Ship_Bullet_N.png");
 	}
 	
 	public void update(){
 		xPos = (int) (xPos + speed * Math.cos(theta - Math.toRadians(180)));
 		yPos = (int) (yPos + speed * Math.sin(theta - Math.toRadians(180)));
 		dist += speed;
-		if(dist > 500) alive = false;
+		if(dist > MAX_DIST) alive = false;
 	}
 	
 	public void draw(Graphics2D g){

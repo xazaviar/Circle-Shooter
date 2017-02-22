@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 
 import arcadia.Input;
 import arcadia.Button;
-import arcadia.Game;
 
 public class Player {
 	private int xPos;
@@ -31,6 +30,8 @@ public class Player {
 	private int animState;			//Which sprite to use
 	
 	private int shootDelay;
+	private int bombs;
+	private int bombDelay;
 
 	//x and y are the center of the circle player travels in
 	//r is the radius of the circle
@@ -44,13 +45,15 @@ public class Player {
 		radius = r;
 		speed = 4;
 		img = new BufferedImage[5];
-		img[0] = ImageLoader.loadImage("resources/Your_Ship_STILL.png");
-		img[1] = ImageLoader.loadImage("resources/Your_Ship_LEFT1.png");
-		img[2] = ImageLoader.loadImage("resources/Your_Ship_LEFT2.png");
-		img[3] = ImageLoader.loadImage("resources/Your_Ship_RIGHT1.png");
-		img[4] = ImageLoader.loadImage("resources/Your_Ship_RIGHT2.png");
+		img[0] = ImageLoader.loadImage("resources/Images/Your_Ship_STILL.png");
+		img[1] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT1.png");
+		img[2] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT2.png");
+		img[3] = ImageLoader.loadImage("resources/Images/Your_Ship_RIGHT1.png");
+		img[4] = ImageLoader.loadImage("resources/Images/Your_Ship_RIGHT2.png");
 		animState = 0;
 		shootDelay = 0;
+		bombs = 3;
+		bombDelay = 30;
 		//System.out.println("xPos = " + xPos + " | yPos = " + yPos);
 	}
 
@@ -76,6 +79,10 @@ public class Player {
 
 	public int getSize(){
 		return this.size;
+	}
+	
+	public int getBombs(){
+		return bombs;
 	}
 
 	/*
@@ -110,14 +117,14 @@ public class Player {
 	 *	movement code courtesy of
 	 *	http://stackoverflow.com/questions/16802431/trouble-making-object-move-in-a-circle
 	 */
-	public Bullet updatePos( Input input, Ring ring ){
+	public Weapon updatePos( Input input, Ring ring ){
 		
 
 		//PRESSING LEFT
 		if( input.pressed(Button.L)){
 			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 			
-			System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
+			//System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
 			if(ring.ring[(seg+1)%ring.ring.length].health!=0){
 				theta = theta + Math.toRadians(speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -144,7 +151,7 @@ public class Player {
 		else if( input.pressed(Button.R)){
 			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 
-			System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
+			//System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
 			if(ring.ring[seg].health!=0){
 				theta = theta + Math.toRadians(-speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -173,12 +180,20 @@ public class Player {
 			yPos = (int)(yOrigin + radius * Math.sin(theta));
 			animState = 0;
 		}
+		//Fire a bomb
+		if( input.pressed(Button.D) && bombDelay <= 0 && bombs > 0){
+			shootDelay = 20;
+			bombDelay = 30;
+			bombs--;
+			return new Bomb(xPos, yPos);
+		}
 		//Shoot your gun
-		if( input.pressed(Button.A) && shootDelay <= 0){
+		else if( input.pressed(Button.U) && shootDelay <= 0){
 			shootDelay = 5;
 			return new Bullet(xPos, yPos, theta);
 		}
-		shootDelay--;
+		shootDelay--; //possible underflow
+		bombDelay--;
 		return null;
 	}
 	

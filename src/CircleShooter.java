@@ -20,12 +20,49 @@ public class CircleShooter extends Game{
 
 	final int c_size = 500;	//The size of the circle
 	int lives = 3;
+	int score = 0;
 
-	int[][] list = {{eType.ASTEROID.ordinal(),0},
-			{eType.SHIP.ordinal(),4}};
-
-	Round r1 = new Round(500,15,1500,list, new Point((WIDTH/2), (HEIGHT/2)),c_size/2);
-	//x origin of circle, y origin of circle, radius of circle, game reference//
+	int[][][] lists = {
+			//Round 1
+			{{eType.ASTEROID.ordinal(),10,50}},
+			//Round 2
+			{{eType.ASTEROID.ordinal(),15,50},
+			 {eType.SHIP.ordinal(),2,100}},
+			//Round 3
+			{{eType.SHIP.ordinal(),20,100}},
+			//Round 4
+			{{eType.ASTEROID.ordinal(),20,50},
+			 {eType.SHIP.ordinal(),10,100}},
+			//Round 5
+			{{eType.ASTEROID.ordinal(),40,50},
+			 {eType.SHIP.ordinal(),20,100}},
+			//Round 6
+			{{eType.ASTEROID.ordinal(),60,50},
+			 {eType.SHIP.ordinal(),25,100}},
+			//Round 7
+			{{eType.ASTEROID.ordinal(),70,50},
+			 {eType.SHIP.ordinal(),30,100}},
+			//Round 8
+			{{eType.ASTEROID.ordinal(),80,50},
+			 {eType.SHIP.ordinal(),35,100}},
+			//Round 9
+			{{eType.ASTEROID.ordinal(),100,50},
+			 {eType.SHIP.ordinal(),50,100}}
+			
+	};
+					 		//	Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
+	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(2000,	20,			5, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(8000,	15,			10, 		false,		lists[4], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(10000,	15,			10, 		true,		lists[5], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(20000,	10,			15, 		false,		lists[6], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(30000,	7,			20, 		true,		lists[7], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round(50000,	3,			30, 		true,		lists[8], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4)};
+	int roundIndex = 0;
+	int roundCount = 1;
+	double growth = 1.5;
 	
 	
 	Player player = new Player( (WIDTH / 2), (HEIGHT/2), c_size/2 );
@@ -33,10 +70,12 @@ public class CircleShooter extends Game{
 	
 	//Game Data
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	public ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
+	public ArrayList<Weapon> playerBullets = new ArrayList<Weapon>();
 	public ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	boolean roundOver = false;
 	boolean gameOver = false;
+	final int MAX_roundOverCount = 90;
+	int roundOverCount = MAX_roundOverCount;
 
 	/**
 	 * Constructor of the game
@@ -52,11 +91,11 @@ public class CircleShooter extends Game{
 			//******************************************************************
 
 			//Move Player & get new Bullets
-			Bullet nullCheck = player.updatePos( input, ring );
+			Weapon nullCheck = player.updatePos( input, ring );
 			if( nullCheck != null ) playerBullets.add( nullCheck );
 
-			ArrayList<Bullet> spent = new ArrayList<>();
-			for(Bullet b: playerBullets){
+			ArrayList<Weapon> spent = new ArrayList<>();
+			for(Weapon b: playerBullets){
 				b.update();
 				if(!b.getAlive()){
 					spent.add(b);
@@ -84,14 +123,16 @@ public class CircleShooter extends Game{
 						enemyBullets.add(shot);
 					}*/
 				}
-				if (!e.alive) {
-					dead.add(e);
-				}
+//				if (!e.alive) {
+//					dead.add(e);
+//					this.rounds[this.roundIndex].enemyDied();
+//				}
 
 				//Check for collision with player
 				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize())){
 					lives--;
 					dead.add(e);
+					this.rounds[this.roundIndex].enemyDied();
 					//Player respawn [will need to be discussed]
 				}
 				
@@ -99,13 +140,16 @@ public class CircleShooter extends Game{
 				int rC = Calc.ringCollide(new Point(e.x,e.y), e.getSize(), ring);
 				if(rC>-1){
 					dead.add(e);
+					this.rounds[this.roundIndex].enemyDied();
 					ring.ringSegDamage(rC);
 				}
 				
-				for( Bullet b: playerBullets ){
+				for( Weapon b: playerBullets ){
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
 						dead.add(e);
-						spent.add(b);
+						this.score += e.getPoints();
+						this.rounds[this.roundIndex].enemyDied();
+						if( b instanceof Bullet) spent.add(b);
 					}
 				}
 
@@ -117,10 +161,10 @@ public class CircleShooter extends Game{
 			enemies.removeAll(dead);
 
 			//Check if the round is over
-			roundOver = r1.checkEndRound();
+			roundOver = rounds[roundIndex].checkEndRound();
 
 			//Spawn new enemies
-			Enemy temp = r1.spawnEnemy();
+			Enemy temp = rounds[roundIndex].spawnEnemy();
 			if(temp!=null){
 				enemies.add(temp);
 				enemies.get(enemies.size()-1).setGame(this);
@@ -138,6 +182,8 @@ public class CircleShooter extends Game{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
 			g.drawString("LIVES: "+lives, WIDTH-125, 25);
+			g.drawString("SCORE: "+score, 25, 25);
+			g.drawString("BOMBS: "+player.getBombs(), WIDTH-125, 50);
 
 			//Draw the Ring
 			ring.draw(g,WIDTH,HEIGHT);
@@ -145,7 +191,7 @@ public class CircleShooter extends Game{
 			//Draw the Player
 			player.draw(g);
 
-			for(Bullet b: playerBullets){
+			for(Weapon b: playerBullets){
 				b.draw(g);
 			}
 			
@@ -156,6 +202,29 @@ public class CircleShooter extends Game{
 			
 			for (Bullet b : enemyBullets) {
 				b.draw(g);
+			}
+			
+			//Draw Round Over
+			if(roundOver){
+				if(this.roundOverCount==this.MAX_roundOverCount){ 
+					this.score += this.rounds[this.roundIndex].score();
+					if(this.rounds[this.roundIndex].refreshRing()) this.ring.refreshRing();
+				}
+				g.setColor(Color.red);
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 110));
+				g.drawString("END ROUND "+(roundCount), WIDTH/2-370, HEIGHT/2);
+				this.roundOverCount--;
+			}
+			
+			if(this.roundOverCount<=0){
+				if(this.roundIndex+1 == this.rounds.length){ //Last possible round
+					this.rounds[this.roundIndex].resetRound(growth);
+				}else{
+					this.roundIndex++;
+				}
+				this.roundCount++;
+				this.roundOverCount = this.MAX_roundOverCount;
+				this.roundOver = false;
 			}
 
 
