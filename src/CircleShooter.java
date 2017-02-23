@@ -118,10 +118,10 @@ public class CircleShooter extends Game{
 				}else if(e instanceof Ship){
 					((Ship) e).getTarget(player.getX(), player.getY());
 					e.update();
-					/*Bullet shot = ((Ship) e).fire();
+					Bullet shot = ((Ship) e).fire();
 					if (shot != null) {
 						enemyBullets.add(shot);
-					}*/
+					}
 				}
 //				if (!e.alive) {
 //					dead.add(e);
@@ -154,9 +154,18 @@ public class CircleShooter extends Game{
 				}
 
 			}
+			
+			// Check enemy bullet collisions (ONLY FOR PLAYER)
+			for (Bullet b : enemyBullets) {
+				if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(), new Point(player.getX(), player.getY()), player.getSize())) {
+					lives--;
+					spent.add(b);
+				}
+			}
 
 			// Remove dead bullets
 			playerBullets.removeAll(spent);
+			enemyBullets.removeAll(spent);
 			// Remove dead enemies
 			enemies.removeAll(dead);
 
