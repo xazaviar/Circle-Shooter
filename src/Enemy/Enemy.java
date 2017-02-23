@@ -15,7 +15,7 @@ public class Enemy {
 	protected static Game game = null;
 	public boolean alive;
 	
-	private int size = 14;				//The size of the enemy
+	protected int size;					//The size of the enemy
 	protected int points;				//The points for the enemy
 	
 	public void setGame(Game g) {
