@@ -29,6 +29,7 @@ public class Ship extends Enemy{
 		super.images[1] = ImageLoader.loadImage("resources/Images/Enemy_Ship_STILL.png");
 		super.hp = 2;
 		super.alive = true;
+		super.size = images[0].getWidth();
 		
 		super.points = points;
 		
