@@ -70,12 +70,15 @@ public class CircleShooter extends Game{
 	
 	//Game Data
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	public ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
+	public ArrayList<Weapon> playerBullets = new ArrayList<Weapon>();
 	public ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	boolean roundOver = false;
 	boolean gameOver = false;
 	final int MAX_roundOverCount = 90;
 	int roundOverCount = MAX_roundOverCount;
+	
+	//Music
+	Audio music = new Audio("resources/Audio/BGM.wav");
 
 	/**
 	 * Constructor of the game
@@ -91,11 +94,11 @@ public class CircleShooter extends Game{
 			//******************************************************************
 
 			//Move Player & get new Bullets
-			Bullet nullCheck = player.updatePos( input, ring );
+			Weapon nullCheck = player.updatePos( input, ring );
 			if( nullCheck != null ) playerBullets.add( nullCheck );
 
-			ArrayList<Bullet> spent = new ArrayList<>();
-			for(Bullet b: playerBullets){
+			ArrayList<Weapon> spent = new ArrayList<>();
+			for(Weapon b: playerBullets){
 				b.update();
 				if(!b.getAlive()){
 					spent.add(b);
@@ -118,10 +121,10 @@ public class CircleShooter extends Game{
 				}else if(e instanceof Ship){
 					((Ship) e).getTarget(player.getX(), player.getY());
 					e.update();
-					/*Bullet shot = ((Ship) e).fire();
+					Bullet shot = ((Ship) e).fire();
 					if (shot != null) {
 						enemyBullets.add(shot);
-					}*/
+					}
 				}
 //				if (!e.alive) {
 //					dead.add(e);
@@ -144,19 +147,28 @@ public class CircleShooter extends Game{
 					ring.ringSegDamage(rC);
 				}
 				
-				for( Bullet b: playerBullets ){
+				for( Weapon b: playerBullets ){
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
 						dead.add(e);
 						this.score += e.getPoints();
 						this.rounds[this.roundIndex].enemyDied();
-						spent.add(b);
+						if( b instanceof Bullet) spent.add(b);
 					}
 				}
 
 			}
+			
+			// Check enemy bullet collisions (ONLY FOR PLAYER)
+			for (Bullet b : enemyBullets) {
+				if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(), new Point(player.getX(), player.getY()), player.getSize())) {
+					lives--;
+					spent.add(b);
+				}
+			}
 
 			// Remove dead bullets
 			playerBullets.removeAll(spent);
+			enemyBullets.removeAll(spent);
 			// Remove dead enemies
 			enemies.removeAll(dead);
 
@@ -183,6 +195,7 @@ public class CircleShooter extends Game{
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
 			g.drawString("LIVES: "+lives, WIDTH-125, 25);
 			g.drawString("SCORE: "+score, 25, 25);
+			g.drawString("BOMBS: "+player.getBombs(), WIDTH-125, 50);
 
 			//Draw the Ring
 			ring.draw(g,WIDTH,HEIGHT);
@@ -190,7 +203,7 @@ public class CircleShooter extends Game{
 			//Draw the Player
 			player.draw(g);
 
-			for(Bullet b: playerBullets){
+			for(Weapon b: playerBullets){
 				b.draw(g);
 			}
 			
@@ -230,10 +243,21 @@ public class CircleShooter extends Game{
 			//******************************************************************
 			// Sound and Audio
 			//******************************************************************
+			if(!music.getPlaying()){
+				if(music.notEOF()){
+					music.start();
+				} else {
+					music = new Audio("resources/Audio/BGM.wav");
+					music.start();
+				}
+			}
+			
 		}else{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 124));
 			g.drawString("GAME OVER", WIDTH/2-370, HEIGHT/2);
+			//Audio gameover = new Audio("resources/Audio/Game Over.wav");
+			//gameover.start();
 		}
 	}
 

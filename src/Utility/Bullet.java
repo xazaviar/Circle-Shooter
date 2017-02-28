@@ -1,11 +1,9 @@
 package Utility;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-public class Bullet {
+public class Bullet implements Weapon{
 	
 	private int xPos;
 	private int yPos;
@@ -26,7 +24,6 @@ public class Bullet {
 	 * x is the x-axis origin
 	 * y is the y-axis origin
 	 * t is the angle towards the middle from the origin
-	 * p is true if the player fired the shot
 	 */
 	public Bullet( int x, int y, double t){
 		xPos = x;
@@ -45,16 +42,7 @@ public class Bullet {
 	}
 	
 	public void draw(Graphics2D g){
-		g.drawImage(img, getRotation(), xPos - (img.getWidth()/2), yPos - (img.getHeight()/2));
-	}
-	
-	private AffineTransformOp getRotation(){
-		double rotationRequired = theta - Math.toRadians(90);
-		double locationX = img.getWidth() / 2;
-		double locationY = img.getHeight() / 2;
-		AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		return op;
+		g.drawImage(img, ImageLoader.getRotation(theta, img), xPos - (img.getWidth()/2), yPos - (img.getHeight()/2));
 	}
 	
 	public int getSize(){
