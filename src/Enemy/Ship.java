@@ -1,8 +1,6 @@
 package Enemy;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import Utility.Bullet;
@@ -88,23 +86,8 @@ public class Ship extends Enemy{
 	}
 	
 	
-	/*
-	 * Creates a rotational matrix which rotates the
-	 * player sprite. Code found at
-	 * http://stackoverflow.com/questions/8639567/java-rotating-images
-	 */
-	public AffineTransformOp getRotation(){
-		double rotationRequired = thetaS - Math.toRadians(0);
-		double locationX = images[1].getWidth() / 2;
-		double locationY = images[1].getHeight() / 2;
-		AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		return op;
-	}
-	
-	
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(images[1], getRotation(), x, y);
+		g.drawImage(images[1], ImageLoader.getRotation(thetaS, images[1]), x, y);
 	}
 }

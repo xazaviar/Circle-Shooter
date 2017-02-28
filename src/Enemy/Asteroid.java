@@ -1,8 +1,6 @@
 package Enemy;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -58,22 +56,8 @@ public class Asteroid extends Enemy{
 		}
 	}
 	
-	/*
-	 * Creates a rotational matrix which rotates the
-	 * player sprite. Code found at
-	 * http://stackoverflow.com/questions/8639567/java-rotating-images
-	 */
-	public AffineTransformOp getRotation(){
-		double rotationRequired = theta - Math.toRadians(0);
-		double locationX = images[0].getWidth() / 2;
-		double locationY = images[0].getHeight() / 2;
-		AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		return op;
-	}
-	
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(images[0], getRotation(), x, y);
+		g.drawImage(images[0], ImageLoader.getRotation(theta, images[0]), x, y);
 	}
 }

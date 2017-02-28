@@ -76,6 +76,9 @@ public class CircleShooter extends Game{
 	boolean gameOver = false;
 	final int MAX_roundOverCount = 90;
 	int roundOverCount = MAX_roundOverCount;
+	
+	//Music
+	Audio music = new Audio("resources/Audio/BGM.wav");
 
 	/**
 	 * Constructor of the game
@@ -240,10 +243,21 @@ public class CircleShooter extends Game{
 			//******************************************************************
 			// Sound and Audio
 			//******************************************************************
+			if(!music.getPlaying()){
+				if(music.notEOF()){
+					music.start();
+				} else {
+					music = new Audio("resources/Audio/BGM.wav");
+					music.start();
+				}
+			}
+			
 		}else{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 124));
 			g.drawString("GAME OVER", WIDTH/2-370, HEIGHT/2);
+			//Audio gameover = new Audio("resources/Audio/Game Over.wav");
+			//gameover.start();
 		}
 	}
 
