@@ -6,6 +6,7 @@ import java.awt.image.AffineTransformOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -13,19 +14,19 @@ import Utility.ImageLoader;
 
 public class Asteroid extends Enemy{
 
+	private int type;
 	private double theta;
 	
 	public Asteroid(int x, int y, int points){
 		super.name = "Asteroid";
-		super.images[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_3.png");
-		super.images[1] = ImageLoader.loadImage("resources/Images/Enemy/asteroidDamagedTemp.jpg");
+		super.images[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_1_Largest.png");
+		super.images[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_3.png");
+		super.images[2] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock4.png");
+		super.images[3] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_2_Smallest.png");
 		super.x = x;
 		super.y = y;
-		super.width = images[0].getWidth();
-		super.height = images[0].getHeight();
 		super.alive = true;
 		super.hp = 2;
-		super.size = width;
 		
 		super.points = points;
 
@@ -37,6 +38,40 @@ public class Asteroid extends Enemy{
 		} while (dx == 0 && dy == 0);
 		
 		theta = 0;
+		type = 0;
+
+		super.width = images[type].getWidth();
+		super.height = images[type].getHeight();
+		super.size = width;
+	}
+	
+	// New constructor
+	public Asteroid(int x, int y, int points, int t) {
+		super.name = "Asteroid";
+		super.images[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_1_Largest.png");
+		super.images[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_3.png");
+		super.images[2] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock4.png");
+		super.images[3] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_2_Smallest.png");
+		super.x = x;
+		super.y = y;
+		super.alive = true;
+		super.hp = 2;
+		
+		super.points = points;
+
+		// Random direction and speed
+		Random rand = new Random();
+		do {
+			super.dx = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
+			super.dy = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
+		} while (dx == 0 && dy == 0);
+		
+		theta = 0;
+		type = t;
+
+		super.width = images[type].getWidth();
+		super.height = images[type].getHeight();
+		super.size = width;
 	}
 	
 	@Override
@@ -65,8 +100,8 @@ public class Asteroid extends Enemy{
 	 */
 	public AffineTransformOp getRotation(){
 		double rotationRequired = theta - Math.toRadians(0);
-		double locationX = images[0].getWidth() / 2;
-		double locationY = images[0].getHeight() / 2;
+		double locationX = images[type].getWidth() / 2;
+		double locationY = images[type].getHeight() / 2;
 		AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 		return op;
@@ -74,6 +109,19 @@ public class Asteroid extends Enemy{
 	
 	@Override
 	public void draw(Graphics2D g) {
-		g.drawImage(images[0], getRotation(), x, y);
+		g.drawImage(images[type], getRotation(), x, y);
+	}
+	
+	@Override
+	public ArrayList<Enemy> die() {
+		super.alive = false;
+		ArrayList<Enemy> spawn = new ArrayList<Enemy>();
+		
+		if (type < 3) {
+			spawn.add(new Asteroid(x, y, points, type+1));
+			spawn.add(new Asteroid(x, y, points, type+1));
+		}
+		
+		return spawn;
 	}
 }

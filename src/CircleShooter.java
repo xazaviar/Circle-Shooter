@@ -111,6 +111,7 @@ public class CircleShooter extends Game{
 
 			//Draw and move Enemies
 			ArrayList<Enemy> dead = new ArrayList<>();
+			ArrayList<Enemy> addedEnemies = new ArrayList<>();
 			for(Enemy e: enemies){
 				//e.setGame(this);
 				if(e instanceof Asteroid){
@@ -146,6 +147,7 @@ public class CircleShooter extends Game{
 				
 				for( Weapon b: playerBullets ){
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
+						addedEnemies.addAll(e.die());
 						dead.add(e);
 						this.score += e.getPoints();
 						this.rounds[this.roundIndex].enemyDied();
@@ -155,11 +157,28 @@ public class CircleShooter extends Game{
 
 			}
 			
-			// Check enemy bullet collisions (ONLY FOR PLAYER)
+			// Check enemy bullet collisions
 			for (Bullet b : enemyBullets) {
+				// Player collision
 				if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(), new Point(player.getX(), player.getY()), player.getSize())) {
 					lives--;
 					spent.add(b);
+				}
+				// Ring collision
+				int rC = Calc.ringCollide(new Point(b.getX(),b.getY()), b.getSize(), ring);
+				if(rC>-1){
+					spent.add(b);
+					this.rounds[this.roundIndex].enemyDied();
+					ring.ringSegDamage(rC);
+				}
+				
+				// Bullet collision
+				for( Weapon e: playerBullets ){
+					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(),
+							new Point(e.getX(),e.getY()), e.getSize())){
+						spent.add(b);
+						if( e instanceof Bullet) spent.add(e);
+					}
 				}
 			}
 
@@ -168,6 +187,9 @@ public class CircleShooter extends Game{
 			enemyBullets.removeAll(spent);
 			// Remove dead enemies
 			enemies.removeAll(dead);
+			
+			// Add new asteroids
+			enemies.addAll(addedEnemies);
 
 			//Check if the round is over
 			roundOver = rounds[roundIndex].checkEndRound();
@@ -253,7 +275,7 @@ public class CircleShooter extends Game{
 	 * 		If the game should be ended
 	 */
 	public boolean checkEndGame(){
-		return lives==0;
+		return lives<=0;
 	}
 
 	public static void main(String[] args){
