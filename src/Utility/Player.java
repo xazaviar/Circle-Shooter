@@ -3,8 +3,6 @@ package Utility;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import arcadia.Input;
@@ -45,7 +43,7 @@ public class Player {
 		radius = r;
 		speed = 4;
 		img = new BufferedImage[5];
-		img[0] = ImageLoader.loadImage("resources/Images/Your_Ship_STILL.png");
+		img[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Ship.png");
 		img[1] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT1.png");
 		img[2] = ImageLoader.loadImage("resources/Images/Your_Ship_LEFT2.png");
 		img[3] = ImageLoader.loadImage("resources/Images/Your_Ship_RIGHT1.png");
@@ -84,20 +82,14 @@ public class Player {
 	public int getBombs(){
 		return bombs;
 	}
-
-	/*
-	 * Creates a rotational matrix which rotates the
-	 * player sprite. Code found at
-	 * http://stackoverflow.com/questions/8639567/java-rotating-images
-	 */
-	public AffineTransformOp getRotation(){
-		double rotationRequired = theta - Math.toRadians(90);
-		double locationX = img[animState].getWidth() / 2;
-		double locationY = img[animState].getHeight() / 2;
-		AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		return op;
+	
+	public void respawn(){
+		theta = Math.PI / 2;
+		xPos = (int)(xOrigin + radius * Math.cos(theta));
+		yPos = (int)(yOrigin + radius * Math.sin(theta));
+		animState = 0;
 	}
+
 
 	/*
 	 * Toggles between engine sprites
@@ -198,7 +190,7 @@ public class Player {
 	}
 	
 	public void draw(Graphics2D g){
-		g.drawImage(img[animState], getRotation(), xPos - (img[animState].getWidth()/2), yPos - (img[animState].getHeight()/2));
+		g.drawImage(img[animState], ImageLoader.getRotation(theta, img[animState]), xPos - (img[animState].getWidth()/2), yPos - (img[animState].getHeight()/2));
 	}
 
 }

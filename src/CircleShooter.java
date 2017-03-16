@@ -49,7 +49,7 @@ public class CircleShooter extends Game{
 			 {eType.SHIP.ordinal(),50,100}}
 	};
 					 		//	Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
-	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
 					  new Round(1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
 					  new Round(2000,	20,			5, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
 					  new Round(4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
