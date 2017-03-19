@@ -181,6 +181,7 @@ public class CircleShooter extends Game{
 					Weapon b = playerBullets.get(i);
 					
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
+						enemies.addAll(e.die());
 						collide = true;
 						enemies.remove(ee);
 						ee--;
@@ -197,14 +198,45 @@ public class CircleShooter extends Game{
 
 		}
 		
-		// Check enemy bullet collisions (ONLY FOR PLAYER)
+		// Check enemy bullet collisions
 		for (int i = 0; i < enemyBullets.size(); i++) {
 			Bullet b = enemyBullets.get(i);
+			boolean collide = false;
 			
-			if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(), new Point(player.getX(), player.getY()), player.getSize())) {
+			// Player collision
+			if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(),
+					new Point(player.getX(), player.getY()), player.getSize()) && !collide) {
 				collideWithPlayer();
 				enemyBullets.remove(i);
 				i--;
+				collide = true;
+			}
+			
+			// Ring collision
+			int rC = Calc.ringCollide(new Point(b.getX(), b.getY()), b.getSize(), ring);
+			if (rC > -1 && !collide) {
+				enemyBullets.remove(i);
+				i--;
+				ring.ringSegDamage(rC);
+				collide = true;
+			}
+			
+			if (!collide) {
+				// Bullet collision
+				for (int j = 0; j < playerBullets.size(); j++) {
+					Weapon w = playerBullets.get(i);
+					if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(),
+							new Point(w.getX(), w.getY()), w.getSize())) {
+						enemyBullets.remove(i);
+						i--;
+						collide = true;
+						if (w instanceof Bullet) {
+							playerBullets.remove(j);
+							j--;
+						}
+						break;
+					}
+				}
 			}
 		}
 	}
