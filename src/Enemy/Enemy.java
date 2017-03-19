@@ -9,7 +9,7 @@ import arcadia.Game;
 public class Enemy {
 
 	public String name;
-	public BufferedImage images[] = new BufferedImage[2];
+	public BufferedImage images[] = new BufferedImage[4];
 	public int x, y, width, height;
 	protected int dx, dy;					// Delta x and y
 	protected int hp, damage;
