@@ -19,9 +19,8 @@ import Utility.*;
 public class CircleShooter extends Game{
 
 	final int c_size = 500;	//The size of the circle
-	int lives = 3;
-	int score = 0;
 
+	//Round Variables
 	int[][][] lists = {
 			//Round 1
 			{{eType.ASTEROID.ordinal(),10,50}},
@@ -48,7 +47,6 @@ public class CircleShooter extends Game{
 			//Round 9
 			{{eType.ASTEROID.ordinal(),100,50},
 			 {eType.SHIP.ordinal(),50,100}}
-			
 	};
 					 		//	Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
 	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
@@ -64,8 +62,14 @@ public class CircleShooter extends Game{
 	int roundCount = 1;
 	double growth = 1.5;
 	
-	
+	//Player Variables
 	Player player = new Player( (WIDTH / 2), (HEIGHT/2), c_size/2 );
+	int lives = 3;
+	int score = 0;
+	final int MAX_INV_TIME = 60;	//Max time the player is invincible after death (in frames)
+	int inv_time = 0;
+	
+	
 	Ring ring = new Ring(45,2,c_size,WIDTH,HEIGHT);
 	
 	//Game Data
@@ -88,121 +92,177 @@ public class CircleShooter extends Game{
 
 	@Override
 	public void tick(Graphics2D g, Input input, Sound sound) {	
-		if(!this.checkEndGame()){
-			//******************************************************************
-			// Game Calculations
-			//******************************************************************
-
-			//Move Player & get new Bullets
-			Weapon nullCheck = player.updatePos( input, ring );
-			if( nullCheck != null ) playerBullets.add( nullCheck );
-
-			ArrayList<Weapon> spent = new ArrayList<>();
-			for(Weapon b: playerBullets){
-				b.update();
-				if(!b.getAlive()){
-					spent.add(b);
-				}
+		//******************************************************************
+		// Game Calculations
+		//******************************************************************
+		if(!this.checkEndGame()) movement(input);
+		collisionDetection();
+		draw(g);
+		music();
+		gameLogic();
+	}
+	
+	/**
+	 * This method handles all player inputs
+	 * @param input
+	 * 				The Input object
+	 */
+	private void movement(Input input){
+		//Move Player & get new Bullets
+		Weapon nullCheck = player.updatePos( input, ring );
+		if( nullCheck != null ) playerBullets.add( nullCheck );
+	}
+	
+	/**
+	 * This method handles all collision detection
+	 */
+	private void collisionDetection(){
+		
+		//Move Player Bullets
+		for(int i = 0; i < playerBullets.size(); i++){
+			Weapon b = playerBullets.get(i);
+			b.update();
+			if(!b.getAlive()){
+				playerBullets.remove(i);
+				i--;
 			}
+		}
+		
+		//Move Enemy Bullets
+		for (int i = 0; i < enemyBullets.size(); i++) {
+			Bullet b = enemyBullets.get(i);
+			b.update();
+			if (!b.getAlive()) {
+				enemyBullets.remove(i);
+				i--;
+			}
+		}
+		//Move Enemies
+		for(int ee = 0; ee < enemies.size(); ee++){
+			Enemy e = enemies.get(ee);
+			boolean collide = false;
 			
-			for (Bullet b : enemyBullets) {
-				b.update();
-				if (!b.getAlive()) {
-					spent.add(b);
-				}
-			}
-
-			//Draw and move Enemies
-			ArrayList<Enemy> dead = new ArrayList<>();
-			for(Enemy e: enemies){
-				//e.setGame(this);
-				if(e instanceof Asteroid){
-					e.update();
-				}else if(e instanceof Ship){
-					((Ship) e).getTarget(player.getX(), player.getY());
-					e.update();
-					Bullet shot = ((Ship) e).fire();
-					if (shot != null) {
-						enemyBullets.add(shot);
-					}
-				}
-//				if (!e.alive) {
-//					dead.add(e);
-//					this.rounds[this.roundIndex].enemyDied();
-//				}
-
-				//Check for collision with player
-				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize())){
-					lives--;
-					dead.add(e);
-					this.rounds[this.roundIndex].enemyDied();
-					//Player respawn [will need to be discussed]
-				}
+			if(e instanceof Asteroid){
+				e.update();
 				
 				//Check for ring collision
 				int rC = Calc.ringCollide(new Point(e.x,e.y), e.getSize(), ring);
 				if(rC>-1){
-					dead.add(e);
+					collide = true;
+					enemies.remove(ee);
+					ee--;
 					this.rounds[this.roundIndex].enemyDied();
 					ring.ringSegDamage(rC);
 				}
+
+				//Check for collision with player
+				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize()) && !collide){
+					collide = true;
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+					collideWithPlayer();
+				}
 				
-				for( Weapon b: playerBullets ){
+			}else if(e instanceof Ship){
+				((Ship) e).getTarget(player.getX(), player.getY());
+				e.update();
+				
+				//Shoot a bullet
+				Bullet shot = ((Ship) e).fire();
+				if (shot != null) {
+					enemyBullets.add(shot);
+				}
+			}
+			
+			//Check for bullet collision
+			if(!collide)
+				for(int i = 0; i < playerBullets.size(); i++){
+					Weapon b = playerBullets.get(i);
+					
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
-						dead.add(e);
-						this.score += e.getPoints();
+						enemies.addAll(e.die());
+						collide = true;
+						enemies.remove(ee);
+						ee--;
 						this.rounds[this.roundIndex].enemyDied();
-						if( b instanceof Bullet) spent.add(b);
+						
+						this.score += e.getPoints();
+						if( b instanceof Bullet){ 
+							playerBullets.remove(i);
+							i--;
+						}
+						break;
 					}
 				}
 
+		}
+		
+		// Check enemy bullet collisions
+		for (int i = 0; i < enemyBullets.size(); i++) {
+			Bullet b = enemyBullets.get(i);
+			boolean collide = false;
+			
+			// Player collision
+			if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(),
+					new Point(player.getX(), player.getY()), player.getSize()) && !collide) {
+				collideWithPlayer();
+				enemyBullets.remove(i);
+				i--;
+				collide = true;
 			}
 			
-			// Check enemy bullet collisions (ONLY FOR PLAYER)
-			for (Bullet b : enemyBullets) {
-				if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(), new Point(player.getX(), player.getY()), player.getSize())) {
-					lives--;
-					spent.add(b);
+			// Ring collision
+			int rC = Calc.ringCollide(new Point(b.getX(), b.getY()), b.getSize(), ring);
+			if (rC > -1 && !collide) {
+				enemyBullets.remove(i);
+				i--;
+				ring.ringSegDamage(rC);
+				collide = true;
+			}
+
+			// Bullet collision
+			for (int j = 0; j < playerBullets.size() && !collide; j++) {
+				Weapon w = playerBullets.get(j);
+				if (Calc.collide(new Point(b.getX(), b.getY()), b.getSize(),
+						new Point(w.getX(), w.getY()), w.getSize())) {
+					enemyBullets.remove(i);
+					i--;
+					collide = true;
+					if (w instanceof Bullet) {
+						playerBullets.remove(j);
+						j--;
+					}
+					break;
 				}
 			}
-
-			// Remove dead bullets
-			playerBullets.removeAll(spent);
-			enemyBullets.removeAll(spent);
-			// Remove dead enemies
-			enemies.removeAll(dead);
-
-			//Check if the round is over
-			roundOver = rounds[roundIndex].checkEndRound();
-
-			//Spawn new enemies
-			Enemy temp = rounds[roundIndex].spawnEnemy();
-			if(temp!=null){
-				enemies.add(temp);
-				enemies.get(enemies.size()-1).setGame(this);
-			}
-
-
-			//******************************************************************
-			// Drawing
-			//******************************************************************
+		}
+	}
+	
+	/**
+	 * This method handles all drawing
+	 * @param g
+	 * 			The Graphics2D object
+	 */
+	private void draw(Graphics2D g){
+		
 			//Clear the screen (Black)  
 			g.setColor(Color.black);  
 			g.fillRect(0,0,WIDTH,HEIGHT);
-
+	
 			//Draw lives
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
 			g.drawString("LIVES: "+lives, WIDTH-125, 25);
 			g.drawString("SCORE: "+score, 25, 25);
 			g.drawString("BOMBS: "+player.getBombs(), WIDTH-125, 50);
-
+	
 			//Draw the Ring
 			ring.draw(g,WIDTH,HEIGHT);
-
+	
 			//Draw the Player
-			player.draw(g);
-
+			if(lives>0) player.draw(g);
+	
 			for(Weapon b: playerBullets){
 				b.draw(g);
 			}
@@ -216,6 +276,7 @@ public class CircleShooter extends Game{
 				b.draw(g);
 			}
 			
+		if(!this.checkEndGame()){	
 			//Draw Round Over
 			if(roundOver){
 				if(this.roundOverCount==this.MAX_roundOverCount){ 
@@ -227,37 +288,59 @@ public class CircleShooter extends Game{
 				g.drawString("END ROUND "+(roundCount), WIDTH/2-370, HEIGHT/2);
 				this.roundOverCount--;
 			}
-			
-			if(this.roundOverCount<=0){
-				if(this.roundIndex+1 == this.rounds.length){ //Last possible round
-					this.rounds[this.roundIndex].resetRound(growth);
-				}else{
-					this.roundIndex++;
-				}
-				this.roundCount++;
-				this.roundOverCount = this.MAX_roundOverCount;
-				this.roundOver = false;
-			}
-
-
-			//******************************************************************
-			// Sound and Audio
-			//******************************************************************
-			if(!music.getPlaying()){
-				if(music.notEOF()){
-					music.start();
-				} else {
-					music = new Audio("resources/Audio/BGM.wav");
-					music.start();
-				}
-			}
-			
 		}else{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 124));
 			g.drawString("GAME OVER", WIDTH/2-370, HEIGHT/2);
 			//Audio gameover = new Audio("resources/Audio/Game Over.wav");
 			//gameover.start();
+		}
+	}
+	
+	/**
+	 * This method handles all music code
+	 */
+	private void music(){
+		if(!music.getPlaying()){
+			if(music.notEOF()){
+				music.start();
+			} else {
+				music = new Audio("resources/Audio/BGM.wav");
+				music.start();
+			}
+		}
+	}
+	
+	/**
+	 * This method checks any game logic that is tick dependent
+	 */
+	private void gameLogic(){
+		
+		//Check if the round is over
+		roundOver = (rounds[roundIndex].checkEndRound() && this.lives > 0);
+
+		//Spawn new enemies
+		Enemy temp = rounds[roundIndex].spawnEnemy();
+		if(temp!=null){
+			enemies.add(temp);
+			enemies.get(enemies.size()-1).setGame(this);
+		}
+		
+		//Increment roundOverCount
+		if(this.roundOverCount<=0){
+			if(this.roundIndex+1 == this.rounds.length){ //Last possible round
+				this.rounds[this.roundIndex].resetRound(growth);
+			}else{
+				this.roundIndex++;
+			}
+			this.roundCount++;
+			this.roundOverCount = this.MAX_roundOverCount;
+			this.roundOver = false;
+		}
+		
+		//Decrement invincibility counter
+		if(this.inv_time>0){
+			this.inv_time--;
 		}
 	}
 
@@ -267,9 +350,22 @@ public class CircleShooter extends Game{
 	 * 		If the game should be ended
 	 */
 	public boolean checkEndGame(){
+		if(lives<0) lives = 0;
 		return lives==0;
 	}
 
+	/**
+	 * This method respawns the player
+	 */
+	public void collideWithPlayer(){
+		if(this.inv_time==0 && this.lives>0){
+			lives--;	
+			this.ring.refreshRing();
+			this.player.respawn();
+			this.inv_time = this.MAX_INV_TIME;
+		}
+	}
+	
 	public static void main(String[] args){
 		Arcadia.display(new Arcadia(new CircleShooter()));
 	}

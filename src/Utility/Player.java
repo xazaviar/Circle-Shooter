@@ -82,6 +82,13 @@ public class Player {
 	public int getBombs(){
 		return bombs;
 	}
+	
+	public void respawn(){
+		theta = Math.PI / 2;
+		xPos = (int)(xOrigin + radius * Math.cos(theta));
+		yPos = (int)(yOrigin + radius * Math.sin(theta));
+		animState = 0;
+	}
 
 
 	/*
