@@ -48,12 +48,10 @@ public class Ring {
             p2 = new Point((int)(cx + diameter/2 * Math.cos(Math.toRadians(theta))), (int)(cy + diameter/2 * Math.sin(Math.toRadians(theta))));
             
             //Create the ring segment
-            if(i==0)
-            	ring[i] = new RingSegment(0, p1, p2);
-            else if(i<ring.length-1)
+            if(i<ring.length-1)
             	ring[i] = new RingSegment(this.MAX_HEALTH, p1, p2);
             else
-            	ring[i] = new RingSegment(1, p1, ring[0].p1);
+            	ring[i] = new RingSegment(this.MAX_HEALTH, p1, ring[0].p1);
 			
 			//Shift points
 			theta+=segLength;
