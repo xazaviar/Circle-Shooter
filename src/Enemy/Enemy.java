@@ -2,13 +2,14 @@ package Enemy;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import arcadia.Game;
 
 public class Enemy {
 
 	public String name;
-	public BufferedImage images[] = new BufferedImage[2];
+	public BufferedImage images[] = new BufferedImage[4];
 	public int x, y, width, height;
 	protected int dx, dy;					// Delta x and y
 	protected int hp, damage;
@@ -58,8 +59,10 @@ public class Enemy {
 	}
 	
 	
-	protected void die() {
+	public ArrayList<Enemy> die() {
 		alive = false;
+		
+		return new ArrayList<Enemy>();
 	}
 	
 
