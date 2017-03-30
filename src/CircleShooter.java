@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import Audio.Music;
 //Arcadia Imports
 import arcadia.Arcadia;
 import arcadia.Game;
@@ -77,12 +78,22 @@ public class CircleShooter extends Game{
 	public ArrayList<Weapon> playerBullets = new ArrayList<Weapon>();
 	public ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	boolean roundOver = false;
-	boolean gameOver = false;
 	final int MAX_roundOverCount = 90;
 	int roundOverCount = MAX_roundOverCount;
 	
 	//Music
-	Audio music = new Audio("resources/Audio/BGM.wav");
+	//Audio music = new Audio("resources/Audio/BGM.wav");
+	boolean start = true;
+	boolean gStart = true;
+	boolean gEnd = false, canPlayEnd = true;
+	boolean rStart = false;
+	boolean rEnd = false;
+	Music bgm = new Music("resources/Audio/BGM.wav", true);
+	Music gameStartA = new Music("resources/Audio/Game Start.wav", false);
+	Music gameOverA = new Music("resources/Audio/Game Over.wav", false);
+	Music roundStartA = new Music("resources/Audio/round start.wav", false);
+	Music roundCompleteA = new Music("resources/Audio/round complete.wav", false);
+	
 
 	/**
 	 * Constructor of the game
@@ -292,7 +303,6 @@ public class CircleShooter extends Game{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 124));
 			g.drawString("GAME OVER", WIDTH/2-370, HEIGHT/2);
-			//Audio gameover = new Audio("resources/Audio/Game Over.wav");
 			//gameover.start();
 		}
 	}
@@ -301,12 +311,46 @@ public class CircleShooter extends Game{
 	 * This method handles all music code
 	 */
 	private void music(){
-		if(!music.getPlaying()){
-			if(music.notEOF()){
-				music.start();
-			} else {
-				music = new Audio("resources/Audio/BGM.wav");
-				music.start();
+		if(this.start){
+			this.start = false;
+			try {
+				this.bgm.play();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.rStart){
+			this.rStart = false;
+			try {
+				this.roundStartA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.rEnd){
+			this.rEnd = false;
+			try {
+				this.roundCompleteA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.gStart){
+			this.gStart = false;
+			try {
+				this.gameStartA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.gEnd){
+			this.gEnd = false;
+			this.canPlayEnd = false;
+			try {
+				this.bgm.stop();
+				this.gameOverA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -336,7 +380,8 @@ public class CircleShooter extends Game{
 			this.roundCount++;
 			this.roundOverCount = this.MAX_roundOverCount;
 			this.roundOver = false;
-		}
+			this.rStart = true;
+		}else if(this.roundOverCount == this.MAX_roundOverCount-2) this.rEnd = true;
 		
 		//Decrement invincibility counter
 		if(this.inv_time>0){
@@ -351,6 +396,7 @@ public class CircleShooter extends Game{
 	 */
 	public boolean checkEndGame(){
 		if(lives<0) lives = 0;
+		if(lives == 0 && this.canPlayEnd) gEnd = true;
 		return lives==0;
 	}
 
