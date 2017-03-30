@@ -181,11 +181,17 @@ public class CircleShooter extends Game{
 					Weapon b = playerBullets.get(i);
 					
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
-						enemies.addAll(e.die());
 						collide = true;
 						enemies.remove(ee);
 						ee--;
 						this.rounds[this.roundIndex].enemyDied();
+						
+						// Asteroids split
+						ArrayList<Enemy> add = e.die();
+						enemies.addAll(add);
+						if (e instanceof Asteroid) {
+							this.rounds[this.roundIndex].enemyAdded(add.size());
+						}
 						
 						this.score += e.getPoints();
 						if( b instanceof Bullet){ 
@@ -196,6 +202,29 @@ public class CircleShooter extends Game{
 					}
 				}
 
+			// Remove offscreen enemies
+			if (!collide) {
+				if (e.width + e.x > Game.WIDTH) {
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+				}
+				if (e.x < 0) {
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+				}
+				if (e.height + e.y > Game.HEIGHT) {
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+				}
+				if (e.y < 0) {
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+				}
+			}
 		}
 		
 		// Check enemy bullet collisions
