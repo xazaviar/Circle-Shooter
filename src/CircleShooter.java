@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Audio.Music;
@@ -65,10 +66,7 @@ public class CircleShooter extends Game{
 	
 	//Player Variables
 	Player player = new Player( (WIDTH / 2), (HEIGHT/2), c_size/2 );
-	int lives = 3;
 	int score = 0;
-	final int MAX_INV_TIME = 60;	//Max time the player is invincible after death (in frames)
-	int inv_time = 0;
 	
 	
 	Ring ring = new Ring(45,2,c_size,WIDTH,HEIGHT);
@@ -94,7 +92,11 @@ public class CircleShooter extends Game{
 	Music roundStartA = new Music("resources/Audio/round start.wav", false);
 	Music roundCompleteA = new Music("resources/Audio/round complete.wav", false);
 	
-
+	//Images
+	BufferedImage lifeFull = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Full_Icon.png");
+	BufferedImage lifeEmpty = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Empty_Icon.png");
+	BufferedImage bombAmmo = ImageLoader.loadImage("resources/Images/Resized_Resources/Ammo_icon.png");
+	
 	/**
 	 * Constructor of the game
 	 */
@@ -290,18 +292,20 @@ public class CircleShooter extends Game{
 			g.setColor(Color.black);  
 			g.fillRect(0,0,WIDTH,HEIGHT);
 	
-			//Draw lives
+			//Draw lives, score, and bombs
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
-			g.drawString("LIVES: "+lives, WIDTH-125, 25);
+			g.drawString("LIVES: ", WIDTH-225, 30);
+			drawLives(g);
 			g.drawString("SCORE: "+score, 25, 25);
-			g.drawString("BOMBS: "+player.getBombs(), WIDTH-125, 50);
+			g.drawString("BOMBS: ", WIDTH-241, 69);
+			drawBombs(g);
 	
 			//Draw the Ring
 			ring.draw(g,WIDTH,HEIGHT);
 	
 			//Draw the Player
-			if(lives>0) player.draw(g);
+			if(player.getLives()>0) player.draw(g);
 	
 			for(Weapon b: playerBullets){
 				b.draw(g);
@@ -390,7 +394,7 @@ public class CircleShooter extends Game{
 	private void gameLogic(){
 		
 		//Check if the round is over
-		roundOver = (rounds[roundIndex].checkEndRound() && this.lives > 0);
+		roundOver = (rounds[roundIndex].checkEndRound() && player.getLives() > 0);
 
 		//Spawn new enemies
 		Enemy temp = rounds[roundIndex].spawnEnemy();
@@ -412,10 +416,6 @@ public class CircleShooter extends Game{
 			this.rStart = true;
 		}else if(this.roundOverCount == this.MAX_roundOverCount-2) this.rEnd = true;
 		
-		//Decrement invincibility counter
-		if(this.inv_time>0){
-			this.inv_time--;
-		}
 	}
 
 	/**
@@ -424,20 +424,49 @@ public class CircleShooter extends Game{
 	 * 		If the game should be ended
 	 */
 	public boolean checkEndGame(){
-		if(lives<0) lives = 0;
-		if(lives == 0 && this.canPlayEnd) gEnd = true;
-		return lives==0;
+		if(player.getLives() == 0 && this.canPlayEnd) gEnd = true;
+		return player.getLives()==0;
 	}
 
 	/**
 	 * This method respawns the player
 	 */
 	public void collideWithPlayer(){
-		if(this.inv_time==0 && this.lives>0){
-			lives--;	
+		if(player.getInvTime()==0 && player.getLives()>0){
+			player.loseLife();	
+			playerBullets.add(new Bomb(player.getX(), player.getY()));
 			this.ring.refreshRing();
 			this.player.respawn();
-			this.inv_time = this.MAX_INV_TIME;
+		}
+	}
+	
+	public void drawLives(Graphics2D g){
+		if( player.getLives() > 2 ){
+			g.drawImage(lifeFull, null, WIDTH - 50, 15);
+		} else {
+			g.drawImage(lifeEmpty, null, WIDTH - 50, 15);
+		}
+		if( player.getLives() > 1 ){
+			g.drawImage(lifeFull, null, WIDTH - 100, 15);
+		} else {
+			g.drawImage(lifeEmpty, null, WIDTH - 100, 15);
+		}
+		if( player.getLives() > 0 ){
+			g.drawImage(lifeFull, null, WIDTH - 150, 15);
+		} else {
+			g.drawImage(lifeEmpty, null, WIDTH - 150, 15);
+		}
+	}
+	
+	public void drawBombs(Graphics2D g){
+		if( player.getBombs() > 2 ){
+			g.drawImage(bombAmmo, null, WIDTH - 45, 50);
+		}
+		if( player.getBombs() > 1 ){
+			g.drawImage(bombAmmo, null, WIDTH - 95, 50);
+		}
+		if( player.getBombs() > 0 ){
+			g.drawImage(bombAmmo, null, WIDTH - 145, 50);
 		}
 	}
 	
