@@ -120,6 +120,13 @@ public class Round {
 	}
 	
 	/**
+	 * Call this whenever an asteroid splits
+	 */
+	public void enemyAdded(int a) {
+		this.spawned += a;
+	}
+	
+	/**
 	 * This method attempts to spawn an enemy. It will return
 	 * the spawned enemy when all are true:
 	 * 		1. The spawnRate tick was hit

@@ -1,14 +1,8 @@
 package Enemy;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 
 import Utility.ImageLoader;
 
@@ -16,6 +10,7 @@ public class Asteroid extends Enemy{
 
 	private int type;
 	private double theta;
+	private double speeds [] = {1,1.25,1.5,2};
 	
 	public Asteroid(int x, int y, int points){
 		super.name = "Asteroid";
@@ -25,20 +20,23 @@ public class Asteroid extends Enemy{
 		super.images[3] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_2_Smallest.png");
 		super.x = x;
 		super.y = y;
+		super.px = x;
+		super.py = y;
 		super.alive = true;
 		super.hp = 2;
 		
 		super.points = points;
 
+		theta = 0;
+		type = 0;
+		
 		// Random direction and speed
 		Random rand = new Random();
 		do {
-			super.dx = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
-			super.dy = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
-		} while (dx == 0 && dy == 0);
+			super.dx = rand.nextDouble() * ((rand.nextBoolean() == true) ? 1 : -1);
+			super.dy = rand.nextDouble() * ((rand.nextBoolean() == true) ? 1 : -1);
+		} while (dx < 0.5 && dy < 0.5);
 		
-		theta = 0;
-		type = 0;
 		
 		super.width = images[type].getWidth();
 		super.height = images[type].getHeight();
@@ -54,20 +52,22 @@ public class Asteroid extends Enemy{
 		super.images[3] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_2_Smallest.png");
 		super.x = x;
 		super.y = y;
+		super.px = x;
+		super.py = y;
 		super.alive = true;
 		super.hp = 2;
 		
 		super.points = points;
 
+		theta = 0;
+		type = t;
+		
 		// Random direction and speed
 		Random rand = new Random();
 		do {
-			super.dx = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
-			super.dy = rand.nextInt(3) * ((rand.nextBoolean() == true) ? 1 : -1);
-		} while (dx == 0 && dy == 0);
-		
-		theta = 0;
-		type = t;
+			super.dx = rand.nextDouble() * speeds[type] * ((rand.nextBoolean() == true) ? 1 : -1);
+			super.dy = rand.nextDouble() * speeds[type] * ((rand.nextBoolean() == true) ? 1 : -1);
+		} while (dx < 0.5 && dy < 0.5);
 		
 		super.width = images[type].getWidth();
 		super.height = images[type].getHeight();
@@ -78,19 +78,6 @@ public class Asteroid extends Enemy{
 	public void move() {
 		super.move();
 		theta += 0.115;
-		
-		if (super.width + super.x > super.game.WIDTH) {
-			this.alive = false;
-		}
-		if (super.x < 0) {
-			this.alive = false;
-		}
-		if (super.height + super.y > super.game.HEIGHT) {
-			this.alive = false;
-		}
-		if (super.y < 0) {
-			this.alive = false;
-		}
 	}
 	
 	@Override

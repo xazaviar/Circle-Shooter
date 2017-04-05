@@ -1,7 +1,6 @@
 package Enemy;
 
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import Utility.Bullet;
 import Utility.ImageLoader;
@@ -20,6 +19,8 @@ public class Ship extends Enemy{
 		super.name = "Ship";
 		super.x = x;
 		super.y = y;
+		super.px = x;
+		super.py = y;
 		super.dx = 0;
 		super.dy = 0;
 		//super.images = new BufferedImage[2];
