@@ -25,10 +25,10 @@ public class CircleShooter extends Game{
 	//Round Variables
 	int[][][] lists = {
 			//Round 1
-			{{eType.ASTEROID.ordinal(),10,50}},
+			{{eType.ASTEROID.ordinal(),1,50}},
 			//Round 2
-			{{eType.ASTEROID.ordinal(),15,50},
-			 {eType.SHIP.ordinal(),2,100}},
+			{{eType.ASTEROID.ordinal(),0,50},
+			 {eType.SHIP.ordinal(),20,100}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
@@ -84,14 +84,31 @@ public class CircleShooter extends Game{
 	//Audio music = new Audio("resources/Audio/BGM.wav");
 	boolean start = true;
 	boolean gStart = true;
-	boolean gEnd = false, canPlayEnd = true;
+	boolean gEnd = false, canPlayEndG = true;
 	boolean rStart = false;
-	boolean rEnd = false;
+	boolean rEnd = false, canPlayEndR = true;
+	boolean pBul = false, pBom = false, pDeath = false;
+	boolean sDeath = false, sBul = false;
+	
 	Music bgm = new Music("resources/Audio/BGM.wav", true);
 	Music gameStartA = new Music("resources/Audio/Game Start.wav", false);
 	Music gameOverA = new Music("resources/Audio/Game Over.wav", false);
 	Music roundStartA = new Music("resources/Audio/round start.wav", false);
 	Music roundCompleteA = new Music("resources/Audio/round complete.wav", false);
+	Music playerBullet = new Music("resources/Audio/Laser9.wav", false);
+	Music playerBomb = new Music("resources/Audio/Laser3.wav", false);
+	Music playerDeath = new Music("resources/Audio/Ship Explosion.wav", false);
+	
+
+	Music[] enemyShot = {new Music("resources/Audio/Laser1.wav", false),
+						 new Music("resources/Audio/Laser2.wav", false),
+						 new Music("resources/Audio/Laser3.wav", false),
+						 new Music("resources/Audio/Laser4.wav", false),
+						 new Music("resources/Audio/Laser5.wav", false),
+						 new Music("resources/Audio/Laser6.wav", false),
+						 new Music("resources/Audio/Laser7.wav", false),
+						 new Music("resources/Audio/Laser8.wav", false),
+						 new Music("resources/Audio/Laser9.wav", false)};
 	
 	//Images
 	BufferedImage lifeFull = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Full_Icon.png");
@@ -124,7 +141,13 @@ public class CircleShooter extends Game{
 	private void movement(Input input){
 		//Move Player & get new Bullets
 		Weapon nullCheck = player.updatePos( input, ring );
-		if( nullCheck != null ) playerBullets.add( nullCheck );
+		if( nullCheck != null ){ 
+			playerBullets.add( nullCheck );
+			if(nullCheck instanceof Bomb)
+				this.pBom = true;
+			else
+				this.pBul = true;
+		}
 	}
 	
 	/**
@@ -190,6 +213,7 @@ public class CircleShooter extends Game{
 				Bullet shot = ((Ship) e).fire();
 				if (shot != null) {
 					enemyBullets.add(shot);
+					this.sBul = true;
 				}
 			}
 			
@@ -211,6 +235,8 @@ public class CircleShooter extends Game{
 						enemies.addAll(add);
 						if (e instanceof Asteroid) {
 							this.rounds[this.roundIndex].enemyAdded(add.size());
+						}else{
+							this.sDeath = true;
 						}
 						
 						this.score += e.getPoints();
@@ -386,8 +412,9 @@ public class CircleShooter extends Game{
 				e.printStackTrace();
 			}
 		}
-		if(this.rEnd){
+		if(this.rEnd && this.canPlayEndR){
 			this.rEnd = false;
+			this.canPlayEndR = false;
 			try {
 				this.roundCompleteA.play2();
 			} catch (Exception e) {
@@ -402,12 +429,50 @@ public class CircleShooter extends Game{
 				e.printStackTrace();
 			}
 		}
-		if(this.gEnd){
+		if(this.gEnd && this.canPlayEndG){
 			this.gEnd = false;
-			this.canPlayEnd = false;
+			this.canPlayEndG = false;
 			try {
 				this.bgm.stop();
 				this.gameOverA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.pBul){
+			this.pBul = false;
+			try {
+				this.playerBullet.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+
+		if(this.sBul){
+			this.sBul = false;
+			try {
+				int r = (int)((Math.random()*1000)%this.enemyShot.length);
+				this.enemyShot[r].play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if(this.pBom){
+			this.pBom = false;
+			try {
+				this.playerBomb.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if(this.pDeath || this.sDeath){
+			this.pDeath = false;
+			this.sDeath = false;
+			try {
+				this.playerDeath.play2();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -440,7 +505,9 @@ public class CircleShooter extends Game{
 			this.roundOverCount = this.MAX_roundOverCount;
 			this.roundOver = false;
 			this.rStart = true;
-		}else if(this.roundOverCount == this.MAX_roundOverCount-2) this.rEnd = true;
+			this.rEnd = false;
+			this.canPlayEndR = true;
+		}else if(this.roundOverCount < this.MAX_roundOverCount) this.rEnd = true;
 		
 	}
 
@@ -450,7 +517,7 @@ public class CircleShooter extends Game{
 	 * 		If the game should be ended
 	 */
 	public boolean checkEndGame(){
-		if(player.getLives() == 0 && this.canPlayEnd) gEnd = true;
+		if(player.getLives() == 0 && this.canPlayEndG) gEnd = true;
 		return player.getLives()==0;
 	}
 
@@ -463,6 +530,8 @@ public class CircleShooter extends Game{
 			playerBullets.add(new Bomb(player.getX(), player.getY()));
 			this.ring.refreshRing();
 			this.player.respawn();
+			this.pDeath = true;
+			this.pBom = true;
 		}
 	}
 	
