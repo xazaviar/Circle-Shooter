@@ -249,27 +249,10 @@ public class CircleShooter extends Game{
 				}
 
 			// Remove offscreen enemies
-			if (!collide) {
-				if (e.width + e.x > Game.WIDTH) {
-					enemies.remove(ee);
-					ee--;
-					this.rounds[this.roundIndex].enemyDied();
-				}
-				if (e.x < 0) {
-					enemies.remove(ee);
-					ee--;
-					this.rounds[this.roundIndex].enemyDied();
-				}
-				if (e.height + e.y > Game.HEIGHT) {
-					enemies.remove(ee);
-					ee--;
-					this.rounds[this.roundIndex].enemyDied();
-				}
-				if (e.y < 0) {
-					enemies.remove(ee);
-					ee--;
-					this.rounds[this.roundIndex].enemyDied();
-				}
+			if (!collide && !e.alive) {
+				enemies.remove(ee);
+				ee--;
+				this.rounds[this.roundIndex].enemyDied();
 			}
 		}
 		
