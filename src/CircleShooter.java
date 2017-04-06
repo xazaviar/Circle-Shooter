@@ -75,6 +75,7 @@ public class CircleShooter extends Game{
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public ArrayList<Weapon> playerBullets = new ArrayList<Weapon>();
 	public ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
+	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	boolean roundOver = false;
 	final int MAX_roundOverCount = 90;
 	int roundOverCount = MAX_roundOverCount;
@@ -189,6 +190,8 @@ public class CircleShooter extends Game{
 					ee--;
 					this.rounds[this.roundIndex].enemyDied();
 					ring.ringSegDamage(rC);
+					
+					particles.add(new ExplosionLarge(e.x, e.y));
 				}
 
 				//Check for collision with player
@@ -198,6 +201,8 @@ public class CircleShooter extends Game{
 					ee--;
 					this.rounds[this.roundIndex].enemyDied();
 					collideWithPlayer();
+					
+					particles.add(new ExplosionLarge(e.x, e.y));
 				}
 				
 			}else if(e instanceof Ship){
@@ -222,6 +227,8 @@ public class CircleShooter extends Game{
 						enemies.remove(ee);
 						ee--;
 						this.rounds[this.roundIndex].enemyDied();
+						
+						particles.add(new ExplosionLarge(e.x, e.y));
 						
 						// Asteroids split
 						ArrayList<Enemy> add = e.die();
@@ -278,6 +285,8 @@ public class CircleShooter extends Game{
 				enemyBullets.remove(i);
 				i--;
 				collide = true;
+				
+				particles.add(new ExplosionLarge(player.getX(), player.getY()));
 			}
 			
 			// Ring collision
@@ -287,6 +296,8 @@ public class CircleShooter extends Game{
 				i--;
 				ring.ringSegDamage(rC);
 				collide = true;
+				
+				particles.add(new ExplosionLarge(b.getX(), b.getY()));
 			}
 
 			// Bullet collision
@@ -297,12 +308,23 @@ public class CircleShooter extends Game{
 					enemyBullets.remove(i);
 					i--;
 					collide = true;
+					
+					particles.add(new ExplosionSmall(b.getX(), b.getY()));
+					
 					if (w instanceof Bullet) {
 						playerBullets.remove(j);
 						j--;
 					}
 					break;
 				}
+			}
+		}
+		
+		//Remove dead particles
+		for( int i = 0; i < particles.size(); i++ ){
+			if (!particles.get(i).isAlive()){
+				particles.remove(i);
+				i--;
 			}
 		}
 	}
@@ -344,6 +366,10 @@ public class CircleShooter extends Game{
 			
 			for (Bullet b : enemyBullets) {
 				b.draw(g);
+			}
+			
+			for (Particle p : particles) {
+				p.draw(g);
 			}
 			
 		if(!this.checkEndGame()){	
