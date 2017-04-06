@@ -25,7 +25,7 @@ public class CircleShooter extends Game{
 	//Round Variables
 	int[][][] lists = {
 			//Round 1
-			{{eType.ASTEROID.ordinal(),1,50}},
+			{{eType.ASTEROID.ordinal(),10,50}},
 			//Round 2
 			{{eType.ASTEROID.ordinal(),0,50},
 			 {eType.SHIP.ordinal(),20,100}},
