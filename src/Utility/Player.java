@@ -84,6 +84,7 @@ public class Player {
 	}
 
 	public int getLives(){
+		if(lives<0) lives = 0;
 		return lives;
 	}
 
