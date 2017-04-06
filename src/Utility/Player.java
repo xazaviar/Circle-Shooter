@@ -50,9 +50,9 @@ public class Player {
 		img[5] = ImageLoader.loadImage("resources/Images/Right2.png");
 		
 		radius = r;
+		theta = Math.PI / 2;
 		xPos = (int)(xOrigin + r * Math.cos(theta));
 		yPos = (int)(yOrigin + r * Math.sin(theta));
-		theta = Math.PI / 2;
 
 		speed = 0;
 		animState = 0;
@@ -84,6 +84,7 @@ public class Player {
 	}
 
 	public int getLives(){
+		if(lives<0) lives = 0;
 		return lives;
 	}
 
