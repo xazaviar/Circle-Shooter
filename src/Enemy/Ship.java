@@ -1,6 +1,7 @@
 package Enemy;
 
 import java.awt.Graphics2D;
+import java.util.Random;
 
 import Utility.Bullet;
 import Utility.ImageLoader;
@@ -8,11 +9,11 @@ import Utility.ImageLoader;
 public class Ship extends Enemy{
 
 	private final int turn = 5;
-	private final int speed = 2;
 	private final int shotDelay = 30;
 	
 	private int targetX, targetY, radius, centerX, centerY;
 	private int delay = 0;
+	private int speed = 2;
 	private double thetaShip, thetaOrbit;
 	
 	public Ship(int x, int y, int points){
@@ -36,6 +37,9 @@ public class Ship extends Enemy{
 		targetY = 0;
 		thetaShip = 0;
 		
+		// Random direction
+		Random rand = new Random();
+		speed *= ((rand.nextBoolean() == true) ? 1 : -1);
 
 		centerX = super.game.WIDTH/2;
 		centerY = super.game.HEIGHT/2;
