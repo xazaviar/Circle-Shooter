@@ -84,8 +84,8 @@ public class Asteroid extends Enemy{
 	
 	@Override
 	public void move() {
-		//super.move();
-		//theta += spin;
+		super.move();
+		theta += spin;
 		
 		if (this.width + this.x > Game.WIDTH) {
 			alive = false;
@@ -115,10 +115,10 @@ public class Asteroid extends Enemy{
 		super.alive = false;
 		ArrayList<Enemy> spawn = new ArrayList<Enemy>();
 		
-		/*if (type < 3 && breakup) {
+		if (type < 3 && breakup) {
 			spawn.add(new Asteroid(x, y, points, type+1, true));
 			spawn.add(new Asteroid(x, y, points, type+1, true));
-		}*/
+		}
 		
 		return spawn;
 	}
