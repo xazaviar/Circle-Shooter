@@ -152,8 +152,20 @@ public class Round {
 				}
 			}
 			
-			if(this.eList[this.sIndex] == eType.ASTEROID.ordinal())
-				ret = new Asteroid(x,y,points);
+			if(this.eList[this.sIndex] == eType.ASTEROID_S.ordinal())
+				ret = new Asteroid(x,y,points,3,false);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_M.ordinal())
+				ret = new Asteroid(x,y,points,2,false);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_L.ordinal())
+				ret = new Asteroid(x,y,points,1,false);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_XL.ordinal())
+				ret = new Asteroid(x,y,points,0,false);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_M_B.ordinal())
+				ret = new Asteroid(x,y,points,2,true);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_L_B.ordinal())
+				ret = new Asteroid(x,y,points,1,true);
+			else if(this.eList[this.sIndex] == eType.ASTEROID_XL_B.ordinal())
+				ret = new Asteroid(x,y,points,0,true);
 			else if(this.eList[this.sIndex] == eType.SHIP.ordinal())
 				ret = new Ship(x,y,points);
 			this.sIndex++;
