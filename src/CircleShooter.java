@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import Audio.Music;
 //Arcadia Imports
 import arcadia.Arcadia;
+import arcadia.Button;
 import arcadia.Game;
 import arcadia.Input;
 import arcadia.Sound;
@@ -28,7 +29,7 @@ public class CircleShooter extends Game{
 			{{eType.ASTEROID_XL.ordinal(),10,50}},
 			//Round 2
 			{{eType.ASTEROID_L.ordinal(),12,50},
-			 {eType.SHIP.ordinal(),4,100}},
+			 {eType.SHIP.ordinal(),400,100}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
@@ -55,16 +56,16 @@ public class CircleShooter extends Game{
 			 {eType.ASTEROID_XL_B.ordinal(),30,50},
 			 {eType.SHIP.ordinal(),60,100}}
 	};
-					 		//	Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
-	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(2000,	20,			5, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(8000,	15,			10, 		false,		lists[4], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(10000,	15,			10, 		true,		lists[5], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(20000,	10,			15, 		false,		lists[6], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(30000,	7,			20, 		true,		lists[7], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round(50000,	3,			30, 		true,		lists[8], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4)};
+					 		//	BGM		Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
+	Round[] rounds = {new Round("bgm",	500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm",	1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm2",	2000,	20,			5, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm2",	4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm",	8000,	15,			10, 		false,		lists[4], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm",	10000,	15,			10, 		true,		lists[5], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm2",	20000,	10,			15, 		false,		lists[6], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("bgm2",	30000,	7,			20, 		true,		lists[7], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
+					  new Round("swi",	50000,	3,			30, 		true,		lists[8], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4)};
 	int roundIndex = 0;
 	int roundCount = 1;
 	double growth = 1.5;
@@ -85,8 +86,12 @@ public class CircleShooter extends Game{
 	final int MAX_roundOverCount = 90;
 	int roundOverCount = MAX_roundOverCount;
 	
+	final int MAX_gameOverCount = 30;
+	int gameOverCount = MAX_gameOverCount;
+	
 	//Music
 	//Audio music = new Audio("resources/Audio/BGM.wav");
+	int bgmPlay = 0;
 	boolean start = true;
 	boolean gStart = true;
 	boolean gEnd = false, canPlayEndG = true;
@@ -96,6 +101,7 @@ public class CircleShooter extends Game{
 	boolean sDeath = false, sBul = false;
 	
 	Music bgm = new Music("resources/Audio/BGM.wav", true);
+	Music bgm2 = new Music("resources/Audio/BGM2.wav", true);
 	Music gameStartA = new Music("resources/Audio/Game Start.wav", false);
 	Music gameOverA = new Music("resources/Audio/Game Over.wav", false);
 	Music roundStartA = new Music("resources/Audio/round start.wav", false);
@@ -135,7 +141,7 @@ public class CircleShooter extends Game{
 		collisionDetection();
 		draw(g);
 		music();
-		gameLogic();
+		gameLogic(input);
 	}
 	
 	/**
@@ -153,6 +159,7 @@ public class CircleShooter extends Game{
 			else
 				this.pBul = true;
 		}
+		
 	}
 	
 	/**
@@ -376,6 +383,14 @@ public class CircleShooter extends Game{
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 124));
 			g.drawString("GAME OVER", WIDTH/2-370, HEIGHT/2);
+			
+			this.gameOverCount--;
+			if(this.gameOverCount<=0){
+				this.gameOverCount = 0;
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 40));
+				g.drawString("Press anything to play again.", WIDTH/4, HEIGHT/2+130);
+			}
+			
 			//gameover.start();
 		}
 	}
@@ -399,6 +414,27 @@ public class CircleShooter extends Game{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			//Change BGM
+			if(this.rounds[this.roundIndex].bgm().equals("swi") || !this.rounds[this.roundIndex].bgm().equals(this.rounds[this.roundIndex-1].bgm())){
+				if(bgmPlay == 0){
+					bgmPlay = 1;
+					bgm.stop();
+					try {
+						this.bgm2.play();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else{
+					bgmPlay = 0;
+					bgm2.stop();
+					try {
+						this.bgm.play();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 		if(this.rEnd && this.canPlayEndR){
 			this.rEnd = false;
@@ -421,7 +457,8 @@ public class CircleShooter extends Game{
 			this.gEnd = false;
 			this.canPlayEndG = false;
 			try {
-				this.bgm.stop();
+				if(this.bgmPlay==0) this.bgm.stop();
+				if(this.bgmPlay==1) this.bgm2.stop();
 				this.gameOverA.play2();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -470,7 +507,7 @@ public class CircleShooter extends Game{
 	/**
 	 * This method checks any game logic that is tick dependent
 	 */
-	private void gameLogic(){
+	private void gameLogic(Input input){
 		
 		//Check if the round is over
 		roundOver = (rounds[roundIndex].checkEndRound() && player.getLives() > 0);
@@ -496,6 +533,11 @@ public class CircleShooter extends Game{
 			this.rEnd = false;
 			this.canPlayEndR = true;
 		}else if(this.roundOverCount < this.MAX_roundOverCount) this.rEnd = true;
+		
+		//Check for game Restart
+		if(this.gameOverCount<=0 && (input.pressed(Button.R) || input.pressed(Button.L) ||input.pressed(Button.A) ||input.pressed(Button.B) ||input.pressed(Button.C) || input.pressed(Button.D))){
+			this.restartGame();
+		}
 		
 	}
 
@@ -551,6 +593,44 @@ public class CircleShooter extends Game{
 		if( player.getBombs() > 0 ){
 			g.drawImage(bombAmmo, null, WIDTH - 145, 50);
 		}
+	}
+	
+	public void restartGame(){
+		Round rE = new Round("swi",50000,3,30,true,lists[8],new Point((WIDTH/2),(HEIGHT/2)),c_size/4);
+		
+		//Reset Game Vars
+		enemies.clear();
+		enemies = new ArrayList<Enemy>();
+		playerBullets = new ArrayList<Weapon>();
+		enemyBullets = new ArrayList<Bullet>();
+		particles = new ArrayList<Particle>();
+		roundOver = false;
+		score = 0;
+		roundIndex = 0;
+		roundCount = 1;
+		gameOverCount = MAX_gameOverCount;
+		
+		
+		//Reset rounds
+		for(int r = 0; r < this.rounds.length-1; r++){
+			this.rounds[r].resetGameRound();
+		}
+		this.rounds[this.rounds.length-1] = rE;
+		
+		//Reset Player and ring
+		this.player.resetPlayer();
+		this.ring.refreshRing();
+		
+		//Begin
+		bgmPlay = 0;
+		start = true;
+		gStart = true;
+		gEnd = false; canPlayEndG = true;
+		rStart = false;
+		rEnd = false; canPlayEndR = true;
+		pBul = false; pBom = false; pDeath = false;
+		sDeath = false; sBul = false;
+		
 	}
 	
 	public static void main(String[] args){
