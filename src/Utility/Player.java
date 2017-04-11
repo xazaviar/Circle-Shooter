@@ -62,6 +62,18 @@ public class Player {
 		lives = 3;
 		//System.out.println("xPos = " + xPos + " | yPos = " + yPos);
 	}
+	
+	public void resetPlayer(){
+		theta = Math.PI / 2;
+		xPos = (int)(xOrigin + radius * Math.cos(theta));
+		yPos = (int)(yOrigin + radius * Math.sin(theta));
+		speed = 0;
+		animState = 0;
+		shootDelay = 0;
+		bombs = 3;
+		bombDelay = 30;
+		lives = 3;
+	}
 
 	public int getX(){
 		return xPos;

@@ -56,7 +56,8 @@ public class Music extends Object implements LineListener{
     
     
     public void play() throws IOException, LineUnavailableException, UnsupportedAudioFileException{
-		player = new PCMFilePlayer (soundFile);
+    	this.loop = true;
+    	player = new PCMFilePlayer (soundFile);
 		player.getLine().addLineListener (this);
 		player.start();
     }
