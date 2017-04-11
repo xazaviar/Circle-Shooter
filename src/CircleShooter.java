@@ -25,30 +25,35 @@ public class CircleShooter extends Game{
 	//Round Variables
 	int[][][] lists = {
 			//Round 1
-			{{eType.ASTEROID.ordinal(),10,50}},
+			{{eType.ASTEROID_XL.ordinal(),10,50}},
 			//Round 2
-			{{eType.ASTEROID.ordinal(),0,50},
-			 {eType.SHIP.ordinal(),20,100}},
+			{{eType.ASTEROID_L.ordinal(),12,50},
+			 {eType.SHIP.ordinal(),4,100}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
-			{{eType.ASTEROID.ordinal(),20,50},
+			{{eType.ASTEROID_L.ordinal(),10,50},
+			 {eType.ASTEROID_M_B.ordinal(),10,50},
 			 {eType.SHIP.ordinal(),10,100}},
 			//Round 5
-			{{eType.ASTEROID.ordinal(),40,50},
+			{{eType.ASTEROID_M_B.ordinal(),10,50},
+		     {eType.ASTEROID_S.ordinal(),30,50},
 			 {eType.SHIP.ordinal(),20,100}},
 			//Round 6
-			{{eType.ASTEROID.ordinal(),60,50},
-			 {eType.SHIP.ordinal(),25,100}},
+			{{eType.ASTEROID_L.ordinal(),40,50},
+			 {eType.ASTEROID_XL_B.ordinal(),20,50}},
 			//Round 7
-			{{eType.ASTEROID.ordinal(),70,50},
+			{{eType.ASTEROID_M_B.ordinal(),70,50},
+			 {eType.ASTEROID_S.ordinal(),30,50},
 			 {eType.SHIP.ordinal(),30,100}},
 			//Round 8
-			{{eType.ASTEROID.ordinal(),80,50},
+			{{eType.ASTEROID_XL_B.ordinal(),80,50},
+			 {eType.ASTEROID_L.ordinal(),30,50},
 			 {eType.SHIP.ordinal(),35,100}},
 			//Round 9
-			{{eType.ASTEROID.ordinal(),100,50},
-			 {eType.SHIP.ordinal(),50,100}}
+			{{eType.ASTEROID_L_B.ordinal(),100,50},
+			 {eType.ASTEROID_XL_B.ordinal(),30,50},
+			 {eType.SHIP.ordinal(),60,100}}
 	};
 					 		//	Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
 	Round[] rounds = {new Round(500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
