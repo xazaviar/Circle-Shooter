@@ -25,13 +25,18 @@ public class Bullet implements Weapon{
 	 * y is the y-axis origin
 	 * t is the angle towards the middle from the origin
 	 */
-	public Bullet( int x, int y, double t){
+	public Bullet( int x, int y, double t, boolean player){
 		xPos = x;
 		yPos = y;
 		theta = t;
 		speed = 5;
 		alive = true;
-		img = ImageLoader.loadImage("resources/Images/Your_Ship_Bullet_N.png");
+		if (player) {
+			img = ImageLoader.loadImage("resources/Images/Your_Ship_Bullet_N.png");
+		}
+		else {
+			img = ImageLoader.loadImage("resources/Images/Resized_Resources/Bullet_Enemy.png");
+		}
 	}
 	
 	public void update(){

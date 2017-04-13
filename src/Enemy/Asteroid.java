@@ -13,6 +13,7 @@ public class Asteroid extends Enemy{
 	private int type;
 	private double theta;
 	private double speeds [] = {1,1.25,1.5,2};
+	private int hps[] = {2,2,2,1};
 	private double spin;
 	private boolean breakup = true;
 	
@@ -60,7 +61,6 @@ public class Asteroid extends Enemy{
 		super.px = x;
 		super.py = y;
 		super.alive = true;
-		super.hp = 2;
 		
 		super.points = points;
 
@@ -80,6 +80,7 @@ public class Asteroid extends Enemy{
 		super.width = images[type].getWidth();
 		super.height = images[type].getHeight();
 		super.size = width;
+		super.hp = hps[type];
 	}
 	
 	@Override
@@ -87,16 +88,16 @@ public class Asteroid extends Enemy{
 		super.move();
 		theta += spin;
 		
-		if (this.width + this.x > Game.WIDTH) {
+		if (this.x > Game.WIDTH) {
 			alive = false;
 		}
-		if (this.x < 0) {
+		if (this.width + this.x < 0) {
 			alive = false;
 		}
-		if (this.height + this.y > Game.HEIGHT) {
+		if (this.y > Game.HEIGHT) {
 			alive = false;
 		}
-		if (this.y < 0) {
+		if (this.height + this.y < 0) {
 			alive = false;
 		}
 	}
