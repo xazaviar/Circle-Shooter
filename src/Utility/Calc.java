@@ -28,7 +28,7 @@ public abstract class Calc {
 	 * 			If the two objects have collided
 	 */
 	public static boolean collide(Point p1, int s1, Point p2, int s2){
-		return Math.pow(p2.x-p1.x,2)+Math.pow(p1.y-p2.y,2) <= Math.pow(s1/2+s2/2,2);
+		return Math.pow((p2.x+s2/2)-(p1.x+s1/2),2)+Math.pow((p2.y+s2/2)-(p1.y+s1/2),2) <= Math.pow(s1/2+s2/2,2);
 	}
 	
 	
