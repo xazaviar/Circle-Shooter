@@ -124,7 +124,7 @@ public class CircleShooter extends Game{
 	//Images
 	BufferedImage lifeFull = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Full_Icon.png");
 	BufferedImage lifeEmpty = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Empty_Icon.png");
-	BufferedImage bombAmmo = ImageLoader.loadImage("resources/Images/Resized_Resources/Ammo_icon.png");
+	BufferedImage bombAmmo = ImageLoader.loadImage("resources/Images/Bomb_Icon.png");
 	
 	/**
 	 * Constructor of the game
@@ -340,10 +340,10 @@ public class CircleShooter extends Game{
 			//Draw lives, score, and bombs
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
-			g.drawString("LIVES: ", WIDTH-225, 30);
+			g.drawString("LIVES: ", WIDTH-235, 30);
 			drawLives(g);
 			g.drawString("SCORE: "+score, 25, 25);
-			g.drawString("BOMBS: ", WIDTH-241, 69);
+			g.drawString("BOMBS: ", WIDTH-251, 75);
 			drawBombs(g);
 	
 			//Draw the Ring
@@ -587,13 +587,13 @@ public class CircleShooter extends Game{
 	
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
-			g.drawImage(bombAmmo, null, WIDTH - 45, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 60, 50);
 		}
 		if( player.getBombs() > 1 ){
-			g.drawImage(bombAmmo, null, WIDTH - 95, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 110, 50);
 		}
 		if( player.getBombs() > 0 ){
-			g.drawImage(bombAmmo, null, WIDTH - 145, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 160, 50);
 		}
 	}
 	
