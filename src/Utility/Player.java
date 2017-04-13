@@ -263,7 +263,7 @@ public class Player {
 		//Shoot your gun
 		else if( input.pressed(Button.U) && shootDelay <= 0){
 			shootDelay = 5;
-			return new Bullet(xPos, yPos, theta);
+			return new Bullet(xPos, yPos, theta, true);
 		}
 		if( shootDelay > 0) shootDelay--;
 		if( bombDelay > 0) bombDelay--;

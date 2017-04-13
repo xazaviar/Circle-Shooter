@@ -39,10 +39,10 @@ public class Bomb implements Weapon{
 	}
 	
 	public int getX(){
-		return xPos;
+		return xPos - (size / 2);
 	}
 	
 	public int getY(){
-		return yPos;
+		return yPos - (size / 2);
 	}
 }

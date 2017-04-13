@@ -236,19 +236,19 @@ public class CircleShooter extends Game{
 					
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
 						collide = true;
-						enemies.remove(ee);
+						/*enemies.remove(ee);
 						ee--;
 						this.rounds[this.roundIndex].enemyDied();
 						
-						particles.add(new ExplosionLarge(e.x, e.y));
+						particles.add(new ExplosionLarge(e.x, e.y));*/
 						
 						// Asteroids split
-						ArrayList<Enemy> add = e.die();
+						ArrayList<Enemy> add = e.damage(1);
 						enemies.addAll(add);
 						if (e instanceof Asteroid) {
 							this.rounds[this.roundIndex].enemyAdded(add.size());
 						}else{
-							this.sDeath = true;
+							//this.sDeath = true;
 						}
 						
 						this.score += e.getPoints();
@@ -261,10 +261,12 @@ public class CircleShooter extends Game{
 				}
 
 			// Remove offscreen enemies
-			if (!collide && !e.alive) {
+			if (/*!collide && */!e.alive) {
 				enemies.remove(ee);
 				ee--;
 				this.rounds[this.roundIndex].enemyDied();
+				particles.add(new ExplosionLarge((e.x+e.getSize()/2), e.y+e.getSize()/2));
+				this.sDeath = true;
 			}
 		}
 		
