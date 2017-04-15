@@ -83,6 +83,10 @@ public class Asteroid extends Enemy{
 		spin = 0.115 * ((rand.nextBoolean() == true) ? 1 : -1);
 	}
 	
+	/**
+	 * Updates the x,y of the Asteroid, rotates the image
+	 * and sets to remove if it leaves the screen. 
+	 */
 	@Override
 	public void move() {
 		super.move();
@@ -102,6 +106,11 @@ public class Asteroid extends Enemy{
 		}
 	}
 	
+	/**
+	 * Draws image to Graphics object
+	 * 
+	 * @param g		Graphics object to draw on
+	 */
 	@Override
 	public void draw(Graphics2D g) {
 		g.drawImage(images[type], ImageLoader.getRotation(theta, images[type]), x, y);
@@ -111,6 +120,11 @@ public class Asteroid extends Enemy{
 		//g.drawOval(x-size/2, y-size/2, size, size);
 	}
 	
+	
+	/**
+	 * Sets the Asteroid as dead and to be removed
+	 * @return		A list of new Enemies
+	 */
 	@Override
 	public ArrayList<Enemy> die() {
 		super.alive = false;

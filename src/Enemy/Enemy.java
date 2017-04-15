@@ -53,6 +53,11 @@ public class Enemy {
 	}
 	
 	
+	/**
+	 * Deals damage to the Enemy
+	 * @param d		Damage dealt
+	 * @return		A list of new Enemies
+	 */
 	public ArrayList<Enemy> damage(int d) {
 		if ((hp -= d) <= 0) {
 			return die();
@@ -61,6 +66,10 @@ public class Enemy {
 	}
 	
 	
+	/**
+	 * Sets the Enemy as dead and to be removed
+	 * @return		A list of new Enemies
+	 */
 	public ArrayList<Enemy> die() {
 		alive = false;
 		
@@ -68,10 +77,19 @@ public class Enemy {
 	}
 	
 
+	/**
+	 * The diameter of the Enemy
+	 * @return		Diameter of the Enemy
+	 */
 	public int getSize(){
 		return this.size;
 	}
 	
+	
+	/**
+	 * Number of points for killing enemy
+	 * @return		Point value
+	 */
 	public int getPoints(){
 		return this.points;
 	}

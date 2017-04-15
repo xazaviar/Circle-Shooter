@@ -135,6 +135,9 @@ public class CircleShooter extends Game{
 	public CircleShooter(){
 	}
 
+	/**
+	 * Manages all actions done in a tick
+	 */
 	@Override
 	public void tick(Graphics2D g, Input input, Sound sound) {	
 		//******************************************************************
