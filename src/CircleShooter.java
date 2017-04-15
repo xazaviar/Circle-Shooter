@@ -19,6 +19,13 @@ import arcadia.Sound;
 import Enemy.*;
 import Utility.*;
 
+/**
+ * Handles all game functions including initialization, ticks, and input.
+ * Uses Arcadia.
+ * 
+ * @author Comet-Kaze team
+ *
+ */
 public class CircleShooter extends Game{
 
 	final int c_size = 500;	//The size of the circle
@@ -591,6 +598,10 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the number of lives on screen
+	 * @param g		Graphics object to draw on
+	 */
 	public void drawLives(Graphics2D g){
 		if( player.getLives() > 2 ){
 			g.drawImage(lifeFull, null, WIDTH - 60, 15);
@@ -609,6 +620,10 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the number of bombs on screen
+	 * @param g		Graphics object to draw on
+	 */
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
 			g.drawImage(bombAmmo, null, WIDTH - 60, 60);
@@ -621,6 +636,9 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Restarts the game, clearing enemies, resetting rounds, and respawning player
+	 */
 	public void restartGame(){
 		Round rE = new Round("swi",50000,3,30,true,lists[8],new Point((WIDTH/2),(HEIGHT/2)),c_size/4);
 		
