@@ -3,6 +3,13 @@ package Utility;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * Bullet object used by both Player and Enemies.
+ * Utilizes the Weapon interface.
+ * 
+ * @author Mathonwy Dean-Hall
+ *
+ */
 public class Bullet implements Weapon{
 	
 	private int xPos;
@@ -20,10 +27,17 @@ public class Bullet implements Weapon{
 	
 	private BufferedImage img;
 
-	/*
-	 * x is the x-axis origin
-	 * y is the y-axis origin
-	 * t is the angle towards the middle from the origin
+	/**
+	 * Bullet Constructor
+	 * 
+	 * @param x
+	 * 		int X-Coordinate origin of Bullet
+	 * @param y
+	 * 		int Y-Coordinate origin of Bullet
+	 * @param t
+	 * 		double Angle toward the center of circle from origin
+	 * @param player
+	 * 		boolean True if Player fired the Bullet, False if enemy
 	 */
 	public Bullet( int x, int y, double t, boolean player){
 		xPos = x;
@@ -39,6 +53,9 @@ public class Bullet implements Weapon{
 		}
 	}
 	
+	/**
+	 * Update Bullet position
+	 */
 	public void update(){
 		xPos = (int) (xPos + speed * Math.cos(theta - Math.toRadians(180)));
 		yPos = (int) (yPos + speed * Math.sin(theta - Math.toRadians(180)));
@@ -46,22 +63,52 @@ public class Bullet implements Weapon{
 		if(dist > MAX_DIST) alive = false;
 	}
 	
+	/**
+	 * Draw the Bullet
+	 * 
+	 * @param g
+	 * 		Graphics2D object we are drawing to
+	 */
 	public void draw(Graphics2D g){
 		g.drawImage(img, ImageLoader.getRotation(theta, img), xPos - (img.getWidth()/2), yPos - (img.getHeight()/2));
 	}
 	
+	/**
+	 * Get the collision size of the Bullet
+	 * 
+	 * @return
+	 * 		int size of Bullet
+	 */
 	public int getSize(){
 		return size;
 	}
 	
+	/**
+	 * Get whether the Bullet is still active
+	 * 
+	 * @return
+	 * 		boolean True if Bullet is active, False otherwise
+	 */
 	public boolean getAlive(){
 		return alive;
 	}
 	
+	/**
+	 * Get X-Coordinate of the Bullet
+	 * 
+	 * @return
+	 * 		int X-Coordinate of Bullet
+	 */
 	public int getX(){
 		return xPos;
 	}
 	
+	/**
+	 * Get Y-Coordinate of the Bullet
+	 * 
+	 * @return
+	 * 		int Y-Coordinate of Bullet
+	 */
 	public int getY(){
 		return yPos;
 	}

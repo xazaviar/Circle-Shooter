@@ -7,6 +7,13 @@ import java.awt.image.BufferedImage;
 import arcadia.Input;
 import arcadia.Button;
 
+/**
+ * Player class. Handles all Player input, movement
+ * weapons, respawning, and invincibility.
+ * 
+ * @author Mathonwy Dean-Hall
+ *
+ */
 public class Player {
 	private int xPos;
 	private int yPos;
@@ -36,8 +43,16 @@ public class Player {
 	final int MAX_INV_TIME = 120;	//Max time the player is invincible after death (in frames)
 	int invTime = 0;
 
-	//x and y are the center of the circle player travels in
-	//r is the radius of the circle
+	/**
+	 * Player Constructor
+	 * 
+	 * @param x
+	 * 		int X-Coordinate of the origin
+	 * @param y
+	 * 		int Y-Coordinate of the origin
+	 * @param r
+	 * 		int radius of the circle
+	 */
 	public Player(int x, int y, int r){
 		
 		xOrigin = x;
@@ -65,6 +80,9 @@ public class Player {
 		//System.out.println("xPos = " + xPos + " | yPos = " + yPos);
 	}
 	
+	/**
+	 * Resets the Player position and stats for new game
+	 */
 	public void resetPlayer(){
 		theta = Math.PI / 2;
 		xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -78,36 +96,78 @@ public class Player {
 		currentDelay = 10;
 	}
 
+	/**
+	 * Get X-Coordinate of the Player
+	 * 
+	 * @return
+	 * 		int X-Coordinate of Player
+	 */
 	public int getX(){
 		return xPos;
 	}
 
+	/**
+	 * Get Y-Coordinate of the Player
+	 * 
+	 * @return
+	 * 		int Y-Coordinate of Player
+	 */
 	public int getY(){
 		return yPos;
 	}
 
+	/**
+	 * Get the current animation state of the Player
+	 * 
+	 * @return
+	 * 		BufferedImage of Player state
+	 */
 	public BufferedImage getSprite(){
 		return img[animState];
 	}
 
+	/**
+	 * Get size of the Player for collision
+	 * 
+	 * @return
+	 * 		int size of Player
+	 */
 	public int getSize(){
 		return this.size;
 	}
 
+	/**
+	 * Get number of Bombs Player can use
+	 * 
+	 * @return
+	 * 		int Bombs available to Player
+	 */
 	public int getBombs(){
 		return bombs;
 	}
 
+	/**
+	 * Get number of lives Player has left
+	 * 
+	 * @return
+	 * 		int number of lives
+	 */
 	public int getLives(){
 		if(lives<0) lives = 0;
 		return lives;
 	}
 
+	/**
+	 * Decrement lives, but not beyond zero
+	 */
 	public void loseLife(){
 		if( lives > 0) lives--;
 		speedUpFiring();
 	}
 
+	/**
+	 * Respawn the Player after dying
+	 */
 	public void respawn(){
 		theta = Math.PI / 2;
 		xPos = (int)(xOrigin + radius * Math.cos(theta));
@@ -116,10 +176,19 @@ public class Player {
 		invTime = MAX_INV_TIME;
 	}
 	
+	/**
+	 * Check how much time is left on Player invulnerability from dying
+	 * 
+	 * @return
+	 * 		int time of invulnerability left
+	 */
 	public int getInvTime(){
 		return invTime;
 	}
 
+	/**
+	 * Increase the fire speed of the Player
+	 */
 	public void speedUpFiring(){
 		if(currentDelay > min_shootDelay)
 			currentDelay--;
@@ -127,6 +196,13 @@ public class Player {
 	
 	/*
 	 * Toggles between engine sprites
+	 */
+	/**
+	 * Toggles between Player engine animation sprites for left
+	 * and right movement.
+	 * 
+	 * @return
+	 * 		int of Player's animation state
 	 */
 	private int toggleState(){
 		if( animState % 2 == 0 ){
@@ -138,6 +214,15 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Currently Unused.
+	 * Calculates if the Player can move right on the Ring
+	 * 
+	 * @param seg
+	 * 		RingSegment Player is on
+	 * @param ring
+	 * 		Ring object the Player is on
+	 */
 	private void shipRightOnRing(int seg, Ring ring){
 		seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 		if(ring.ring[seg].health==0){
@@ -151,6 +236,15 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Currently Unused.
+	 * Calculates if the Player can move left on the Ring
+	 * 
+	 * @param seg
+	 * 		RingSegment Player is on
+	 * @param ring
+	 * 		Ring object the Player is on
+	 */
 	private void shipLeftOnRing(int seg, Ring ring){
 		seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 		if(ring.ring[seg].health==0){
@@ -164,10 +258,18 @@ public class Player {
 		}
 	}
 
-	/*
-	 *	changes position of the player to simulate movement
-	 *	movement code courtesy of
-	 *	http://stackoverflow.com/questions/16802431/trouble-making-object-move-in-a-circle
+	/**
+	 * Updates the Player's position based on input and also fires weapons.
+	 * 
+	 * Movement partially based on code found at:
+	 * http://stackoverflow.com/questions/16802431/trouble-making-object-move-in-a-circle
+	 * 
+	 * @param input
+	 * 		Input object sent by Arcadia
+	 * @param ring
+	 * 		Ring object the Player is on
+	 * @return
+	 * 		Weapon object that Player may fire
 	 */
 	public Weapon updatePos( Input input, Ring ring ){
 
@@ -294,6 +396,12 @@ public class Player {
 		return null;
 	}
 
+	/**
+	 * Draw the Player with correct orientation and animation state
+	 * 
+	 * @param g
+	 * 		Graphics2D object we are drawing to
+	 */
 	public void draw(Graphics2D g){
 		if(invTime == 0 || invTime % 2 == 0)
 		g.drawImage(img[animState], ImageLoader.getRotation(theta, img[animState]), xPos - (img[animState].getWidth()/2), yPos - (img[animState].getHeight()/2));
