@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
- * Bullet object used by both players and enemies.
+ * Bullet object used by both Player and Enemies.
  * Utilizes the Weapon interface.
  * 
  * @author Mathonwy Dean-Hall

@@ -19,6 +19,14 @@ import arcadia.Sound;
 import Enemy.*;
 import Utility.*;
 
+/**
+ * Game class which contains main method, tick method,
+ * and game initialization.
+ * Uses Arcadia.
+ * 
+ * @author Team Circle-Shooter
+ *
+ */
 public class CircleShooter extends Game{
 
 	final int c_size = 500;	//The size of the circle
@@ -135,7 +143,9 @@ public class CircleShooter extends Game{
 	public CircleShooter(){
 	}
 
-	@Override
+	/**
+	 * Arcadia method for game ticks
+	 */
 	public void tick(Graphics2D g, Input input, Sound sound) {	
 		//******************************************************************
 		// Game Calculations
@@ -586,6 +596,12 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the life icons in the upper right
+	 * 
+	 * @param g
+	 * 		Graphics2D object we are drawing to
+	 */
 	public void drawLives(Graphics2D g){
 		if( player.getLives() > 2 ){
 			g.drawImage(lifeFull, null, WIDTH - 60, 15);
@@ -604,6 +620,12 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the bomb icons in the upper right
+	 * 
+	 * @param g
+	 * 		Graphics2D object we are drawing to
+	 */
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
 			g.drawImage(bombAmmo, null, WIDTH - 60, 60);
@@ -616,6 +638,9 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Restarts all the game variables for a new game
+	 */
 	public void restartGame(){
 		Round rE = new Round("swi",50000,3,30,true,lists[8],new Point((WIDTH/2),(HEIGHT/2)),c_size/4);
 		
@@ -654,11 +679,19 @@ public class CircleShooter extends Game{
 		
 	}
 	
+	/**
+	 * Main method to run our game through Arcadia
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args){
 		Arcadia.display(new Arcadia(new CircleShooter()));
 	}
 
-	@Override
+	/**
+	 * Arcadia method for a cover.
+	 * Unknown purpose.
+	 */
 	public Image cover() {
 		// TODO Auto-generated method stub
 		return null;
