@@ -56,17 +56,22 @@ public class Asteroid extends Enemy{
 		super.images[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_3.png");
 		super.images[2] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock4.png");
 		super.images[3] = ImageLoader.loadImage("resources/Images/Resized_Resources/Rock_2_Smallest.png");
-		super.x = x;
-		super.y = y;
-		super.px = x;
-		super.py = y;
-		super.alive = true;
 		
-		super.points = points;
 
 		theta = 0;
 		type = t;
 		breakup = b;
+		super.width = images[type].getWidth();
+		super.height = images[type].getHeight();
+		super.size = width;
+		super.hp = hps[type];
+		super.x = x - size/2;
+		super.y = y - size/2;
+		super.px = super.x;
+		super.py = super.y;
+		super.alive = true;
+		
+		super.points = points;
 		
 		// Random direction and speed
 		Random rand = new Random();
@@ -76,11 +81,6 @@ public class Asteroid extends Enemy{
 		} while (dx < 0.5 && dy < 0.5);
 		
 		spin = 0.115 * ((rand.nextBoolean() == true) ? 1 : -1);
-		
-		super.width = images[type].getWidth();
-		super.height = images[type].getHeight();
-		super.size = width;
-		super.hp = hps[type];
 	}
 	
 	@Override

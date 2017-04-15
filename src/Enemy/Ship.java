@@ -5,6 +5,7 @@ import java.util.Random;
 
 import Utility.Bullet;
 import Utility.ImageLoader;
+import arcadia.Game;
 
 public class Ship extends Enemy{
 
@@ -41,8 +42,8 @@ public class Ship extends Enemy{
 		Random rand = new Random();
 		speed *= ((rand.nextBoolean() == true) ? 1 : -1);
 
-		centerX = super.game.WIDTH/2-size/2;
-		centerY = super.game.HEIGHT/2-size/2;
+		centerX = Game.WIDTH/2-size/2;
+		centerY = Game.HEIGHT/2-size/2;
 		radius = (int) Math.sqrt((centerX - (super.x + super.images[0].getWidth()/2)) *
 				(centerX - (super.x + super.images[0].getWidth()/2)) +
 				(centerY - (super.y + super.images[0].getHeight()/2)) *
