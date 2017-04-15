@@ -9,7 +9,7 @@ import Utility.ImageLoader;
 public class Ship extends Enemy{
 
 	private final int turn = 5;
-	private final int shotDelay = 30;
+	private final int shotDelay = 37;
 	
 	private int targetX, targetY, radius, centerX, centerY;
 	private int delay = shotDelay;

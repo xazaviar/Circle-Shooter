@@ -35,7 +35,7 @@ public class Bullet implements Weapon{
 			img = ImageLoader.loadImage("resources/Images/Your_Ship_Bullet_N.png");
 		}
 		else {
-			img = ImageLoader.loadImage("resources/Images/Resized_Resources/Bullet_Enemy.png");
+			img = ImageLoader.loadImage("resources/Images/Enemy_Bullet.png");
 		}
 	}
 	
