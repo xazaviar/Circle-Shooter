@@ -29,7 +29,7 @@ public class CircleShooter extends Game{
 			{{eType.ASTEROID_XL.ordinal(),10,50}},
 			//Round 2
 			{{eType.ASTEROID_L.ordinal(),12,50},
-			 {eType.SHIP.ordinal(),400,100}},
+			 {eType.SHIP.ordinal(),4,100}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
@@ -127,6 +127,7 @@ public class CircleShooter extends Game{
 	BufferedImage lifeFull = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Full_Icon.png");
 	BufferedImage lifeEmpty = ImageLoader.loadImage("resources/Images/Resized_Resources/Life_Empty_Icon.png");
 	BufferedImage bombAmmo = ImageLoader.loadImage("resources/Images/Bomb_Icon.png");
+	BufferedImage logo = ImageLoader.loadImage("resources/Images/LogoBG.png");
 	
 	/**
 	 * Constructor of the game
@@ -337,6 +338,16 @@ public class CircleShooter extends Game{
 			//Clear the screen (Black)  
 			g.setColor(Color.black);  
 			g.fillRect(0,0,WIDTH,HEIGHT);
+			
+			/*
+			//Dangerous Logo
+			int randX = (int) (Math.random() * WIDTH);
+			int randY = (int) (Math.random() * HEIGHT);
+			g.drawImage(logo, null, randX - logo.getWidth()/2, randY - logo.getHeight()/2);
+			 */
+			
+			//Game Logo
+			g.drawImage(logo, null, WIDTH/2 - logo.getWidth()/2, HEIGHT/2 - logo.getHeight()/2);
 	
 			//Draw lives, score, and bombs
 			g.setColor(Color.red);
@@ -541,6 +552,7 @@ public class CircleShooter extends Game{
 			this.rStart = true;
 			this.rEnd = false;
 			this.canPlayEndR = true;
+			this.player.speedUpFiring();
 		}else if(this.roundOverCount < this.MAX_roundOverCount) this.rEnd = true;
 		
 		//Check for game Restart
@@ -576,31 +588,31 @@ public class CircleShooter extends Game{
 	
 	public void drawLives(Graphics2D g){
 		if( player.getLives() > 2 ){
-			g.drawImage(lifeFull, null, WIDTH - 50, 15);
+			g.drawImage(lifeFull, null, WIDTH - 60, 15);
 		} else {
-			g.drawImage(lifeEmpty, null, WIDTH - 50, 15);
+			g.drawImage(lifeEmpty, null, WIDTH - 60, 15);
 		}
 		if( player.getLives() > 1 ){
-			g.drawImage(lifeFull, null, WIDTH - 100, 15);
+			g.drawImage(lifeFull, null, WIDTH - 110, 15);
 		} else {
-			g.drawImage(lifeEmpty, null, WIDTH - 100, 15);
+			g.drawImage(lifeEmpty, null, WIDTH - 110, 15);
 		}
 		if( player.getLives() > 0 ){
-			g.drawImage(lifeFull, null, WIDTH - 150, 15);
+			g.drawImage(lifeFull, null, WIDTH - 160, 15);
 		} else {
-			g.drawImage(lifeEmpty, null, WIDTH - 150, 15);
+			g.drawImage(lifeEmpty, null, WIDTH - 160, 15);
 		}
 	}
 	
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
-			g.drawImage(bombAmmo, null, WIDTH - 60, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 60, 60);
 		}
 		if( player.getBombs() > 1 ){
-			g.drawImage(bombAmmo, null, WIDTH - 110, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 110, 60);
 		}
 		if( player.getBombs() > 0 ){
-			g.drawImage(bombAmmo, null, WIDTH - 160, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 160, 60);
 		}
 	}
 	

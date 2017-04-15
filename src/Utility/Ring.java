@@ -1,14 +1,17 @@
 package Utility;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 public class Ring {
 
 	RingSegment[] ring;
 	final int MAX_HEALTH;
 	final int DIAMETER;
+	
+	BufferedImage[] img;
 	
 	/**
 	 * Initializes the ring with a number of segments
@@ -27,6 +30,10 @@ public class Ring {
 	public Ring(int size, int maxHealth, int diameter, int width, int height){
 		this.MAX_HEALTH = maxHealth;
 		this.DIAMETER = diameter;
+		
+		img = new BufferedImage[2];
+		img[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Piece.png");
+		img[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Piece_red.png");
 		
 		//Create the ring and initialize all 
 		//segments to max health and give
@@ -84,15 +91,21 @@ public class Ring {
 	 * @param g
 	 * 			The graphics element to draw with
 	 */
-	public void draw(Graphics g, int width, int height){
+	public void draw(Graphics2D g, int width, int height){
 		for(RingSegment r: ring){
-			if(r.health==this.MAX_HEALTH)
+			if(r.health==this.MAX_HEALTH) {
 				g.setColor(Color.white);
-			else if(r.health>0)
+			
+				g.drawImage(img[0], ImageLoader.getRotation(Math.atan2(r.p2.y - r.p1.y, r.p2.x - r.p1.x) + Math.PI/2, img[0]),
+						r.p1.x - img[0].getWidth()/2, r.p1.y - img[0].getHeight()/2);
+			} else if(r.health>0) {
 				g.setColor(Color.red);
 			
-			if(r.health>0)
-				g.drawLine(r.p1.x, r.p1.y, r.p2.x, r.p2.y);
+				g.drawImage(img[1], ImageLoader.getRotation(Math.atan2(r.p2.y - r.p1.y, r.p2.x - r.p1.x) + Math.PI/2, img[1]),
+						r.p1.x - img[1].getWidth()/2, r.p1.y - img[1].getHeight()/2);
+			} if(r.health>0) {
+				//g.drawLine(r.p1.x, r.p1.y, r.p2.x, r.p2.y);
+			}
 		}
 	}
 	
