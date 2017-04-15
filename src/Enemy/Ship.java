@@ -7,6 +7,11 @@ import Utility.Bullet;
 import Utility.ImageLoader;
 import arcadia.Game;
 
+/**
+ * Ship class that handles all Ship functions.
+ * @author Josh
+ *
+ */
 public class Ship extends Enemy{
 
 //	private final int turn = 5;

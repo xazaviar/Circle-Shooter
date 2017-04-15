@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 import arcadia.Game;
 
+/**
+ * Enemy class that handles all Enemy functions.
+ * @author Josh
+ *
+ */
 public class Enemy {
 
 	public String name;

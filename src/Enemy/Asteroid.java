@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import Utility.ImageLoader;
 import arcadia.Game;
 
+/**
+ * Asteroid class that handles all Asteroid functions.
+ * @author Josh
+ *
+ */
 public class Asteroid extends Enemy{
 
 	private int type;
