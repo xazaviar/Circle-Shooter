@@ -76,7 +76,7 @@ public class PCMFilePlayer implements Runnable {
                     }
                     // how many frames did we get,
                     // and how many are left over?
-                    int frames = bytesRead / frameSize;
+//                   int frames = bytesRead / frameSize;
                     int leftover = bytesRead % frameSize;
                     // send to line
                     line.write (buffer, readPoint, bytesRead-leftover);
