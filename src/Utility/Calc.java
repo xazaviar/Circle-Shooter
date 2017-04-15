@@ -53,7 +53,7 @@ public abstract class Calc {
 		
 		for(int i = 0; i < ring.ring.length; i++){
 			Point d = new Point(ring.ring[i].p2.x - ring.ring[i].p1.x, ring.ring[i].p2.y - ring.ring[i].p1.y);
-			Point f = new Point(ring.ring[i].p1.x - p.x, ring.ring[i].p1.y - p.y);
+			Point f = new Point(ring.ring[i].p1.x - (p.x+s/2), ring.ring[i].p1.y - (p.y+s/2));
 			
 			double a = dot(d,d);
 			double b = 2*dot(f,d);

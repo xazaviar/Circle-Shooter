@@ -12,7 +12,7 @@ public class Ship extends Enemy{
 	private final int shotDelay = 30;
 	
 	private int targetX, targetY, radius, centerX, centerY;
-	private int delay = 0;
+	private int delay = shotDelay;
 	private int speed = 2;
 	private double thetaShip, thetaOrbit;
 	
@@ -41,8 +41,8 @@ public class Ship extends Enemy{
 		Random rand = new Random();
 		speed *= ((rand.nextBoolean() == true) ? 1 : -1);
 
-		centerX = super.game.WIDTH/2;
-		centerY = super.game.HEIGHT/2;
+		centerX = super.game.WIDTH/2-size/2;
+		centerY = super.game.HEIGHT/2-size/2;
 		radius = (int) Math.sqrt((centerX - (super.x + super.images[0].getWidth()/2)) *
 				(centerX - (super.x + super.images[0].getWidth()/2)) +
 				(centerY - (super.y + super.images[0].getHeight()/2)) *
@@ -76,7 +76,7 @@ public class Ship extends Enemy{
 			int myX = (int) (super.x + super.images[0].getWidth()/2 + (50 * Math.sin(thetaShip)));
 			int myY = (int) (super.y + super.images[0].getHeight()/2 + (50 * Math.cos(thetaShip)));
 			shot = new Bullet(/*myX/*/super.x + super.images[0].getWidth()/2/**/,
-					/*myY/*/super.y + super.images[0].getHeight()/2/**/, thetaShip);
+					/*myY/*/super.y + super.images[0].getHeight()/2/**/, thetaShip, false);
 			//System.out.println(Math.toDegrees(thetaShip);
 		}
 		//System.out.println(Math.toDegrees(thetaS));

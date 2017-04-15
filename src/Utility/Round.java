@@ -13,6 +13,7 @@ public class Round {
 	int[] eList;			//The list of enemies to spawn and in what order
 	int[][] pointList;		//The Point values associated with each type of enemy
 	boolean refresh;		//Determines if a ring refresh can happen
+	final String bgmName;	//The background music to play during the round ('swi' means always change)
 	
 	//Predetermined Variables
 	final int xMin;			//The minimum x coordinate that enemies can spawn
@@ -43,8 +44,9 @@ public class Round {
 	 * @param radius
 	 * 			The radius of the circle
 	 */
-	public Round(int score, int spawnRate, int spawnCap, boolean refresh, int[][] list, Point center, int radius){
+	public Round(String bgm, int score, int spawnRate, int spawnCap, boolean refresh, int[][] list, Point center, int radius){
 		//Initialize variables
+		this.bgmName = bgm;
 		this.score = score;
 		this.spawnRate = spawnRate;
 		this.spawnCap = spawnCap;
@@ -81,6 +83,15 @@ public class Round {
 		yMin = center.y - radius/6;
 		yMax = center.y + radius/6;
 		
+	}
+	
+	/**
+	 * Returns the bgm being played for this round
+	 * @return
+	 * 			The bgm Name of the round
+	 */
+	public String bgm(){
+		return this.bgmName;
 	}
 	
 	/**
@@ -176,6 +187,34 @@ public class Round {
 			this.spawnRateCount++;
 		
 		return ret;
+	}
+	
+	public void resetGameRound(){
+		//Create the correct sizing for the enemy list
+		int sum = 0;
+		int[] list = new int[this.pointList.length];
+		for(int i = 0; i < this.pointList.length; i++){
+			double temp = this.pointList[i][2];
+			list[i] = (int)temp; 
+			sum += (int)temp;
+		}
+		this.eList = new int[sum];
+		
+		//Generate the list of enemy spawn order by choosing 
+		//randomly from the selected list of options
+		for(int i = 0; i < this.eList.length; i++){
+			
+			//Randomly select
+			int r = ((int)(Math.random()*100))%this.pointList.length;
+			while(list[r] == 0)
+				r = ((int)(Math.random()*100))%this.pointList.length;
+			
+			this.eList[i] = this.pointList[r][0];
+			list[r]--;
+		}
+		
+		this.sIndex = 0;
+		this.spawned = 0;
 	}
 	
 	/**

@@ -53,11 +53,11 @@ public class Enemy {
 	}
 	
 	
-	protected void damage(int d) {
-		if ((hp -= d) == 0) {
-			die();
+	public ArrayList<Enemy> damage(int d) {
+		if ((hp -= d) <= 0) {
+			return die();
 		}
-		
+		return new ArrayList<Enemy>();
 	}
 	
 	
