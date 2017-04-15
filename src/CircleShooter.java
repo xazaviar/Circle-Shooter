@@ -99,6 +99,7 @@ public class CircleShooter extends Game{
 	boolean rEnd = false, canPlayEndR = true;
 	boolean pBul = false, pBom = false, pDeath = false;
 	boolean sDeath = false, sBul = false;
+	boolean imp = false;
 	
 	Music bgm = new Music("resources/Audio/BGM.wav", true);
 	Music bgm2 = new Music("resources/Audio/BGM2.wav", true);
@@ -107,8 +108,9 @@ public class CircleShooter extends Game{
 	Music roundStartA = new Music("resources/Audio/round start.wav", false);
 	Music roundCompleteA = new Music("resources/Audio/round complete.wav", false);
 	Music playerBullet = new Music("resources/Audio/Laser9.wav", false);
-	Music playerBomb = new Music("resources/Audio/Laser3.wav", false);
+	Music playerBomb = new Music("resources/Audio/Bomb.wav", false);
 	Music playerDeath = new Music("resources/Audio/Ship Explosion.wav", false);
+	Music impact = new Music("resources/Audio/Impact.wav", false);
 	
 
 	Music[] enemyShot = {new Music("resources/Audio/Laser1.wav", false),
@@ -193,26 +195,28 @@ public class CircleShooter extends Game{
 			
 			if(e instanceof Asteroid){
 				e.update();
+
+				//Check for collision with player
+				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize()) && !collide){
+					collide = true;
+					imp = true;
+					enemies.remove(ee);
+					ee--;
+					this.rounds[this.roundIndex].enemyDied();
+					collideWithPlayer();
+					
+					particles.add(new ExplosionLarge(e.x, e.y));
+				}
 				
 				//Check for ring collision
 				int rC = Calc.ringCollide(new Point(e.x,e.y), e.getSize(), ring);
 				if(rC>-1){
 					collide = true;
+					imp = true;
 					enemies.remove(ee);
 					ee--;
 					this.rounds[this.roundIndex].enemyDied();
 					ring.ringSegDamage(rC);
-					
-					particles.add(new ExplosionLarge(e.x, e.y));
-				}
-
-				//Check for collision with player
-				if(Calc.collide(new Point(player.getX(),player.getY()), player.getSize(), new Point(e.x,e.y), e.getSize()) && !collide){
-					collide = true;
-					enemies.remove(ee);
-					ee--;
-					this.rounds[this.roundIndex].enemyDied();
-					collideWithPlayer();
 					
 					particles.add(new ExplosionLarge(e.x, e.y));
 				}
@@ -236,11 +240,7 @@ public class CircleShooter extends Game{
 					
 					if(Calc.collide(new Point(b.getX(),b.getY()), b.getSize(), new Point(e.x,e.y), e.getSize())){
 						collide = true;
-						/*enemies.remove(ee);
-						ee--;
-						this.rounds[this.roundIndex].enemyDied();
-						
-						particles.add(new ExplosionLarge(e.x, e.y));*/
+						imp = true;
 						
 						// Asteroids split
 						ArrayList<Enemy> add = e.damage(1);
@@ -251,9 +251,9 @@ public class CircleShooter extends Game{
 							//this.sDeath = true;
 						}
 						
-						this.score += e.getPoints();
 						if( b instanceof Bullet){ 
 							playerBullets.remove(i);
+							this.score += e.getPoints();
 							i--;
 						}
 						break;
@@ -293,6 +293,7 @@ public class CircleShooter extends Game{
 				i--;
 				ring.ringSegDamage(rC);
 				collide = true;
+				imp = true;
 				
 				particles.add(new ExplosionLarge(b.getX(), b.getY()));
 			}
@@ -340,10 +341,8 @@ public class CircleShooter extends Game{
 			//Draw lives, score, and bombs
 			g.setColor(Color.red);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 24));
-			g.drawString("LIVES: ", WIDTH-235, 30);
 			drawLives(g);
 			g.drawString("SCORE: "+score, 25, 25);
-			g.drawString("BOMBS: ", WIDTH-251, 75);
 			drawBombs(g);
 	
 			//Draw the Ring
@@ -451,6 +450,14 @@ public class CircleShooter extends Game{
 			this.gStart = false;
 			try {
 				this.gameStartA.play2();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(this.imp){
+			this.imp = false;
+			try {
+				this.impact.play2();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
