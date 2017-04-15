@@ -5,6 +5,7 @@ import java.util.Random;
 
 import Utility.Bullet;
 import Utility.ImageLoader;
+import arcadia.Game;
 
 public class Ship extends Enemy{
 
@@ -41,8 +42,8 @@ public class Ship extends Enemy{
 		Random rand = new Random();
 		speed *= ((rand.nextBoolean() == true) ? 1 : -1);
 
-		centerX = super.game.WIDTH/2-size/2;
-		centerY = super.game.HEIGHT/2-size/2;
+		centerX = Game.WIDTH/2-size/2;
+		centerY = Game.HEIGHT/2-size/2;
 		radius = (int) Math.sqrt((centerX - (super.x + super.images[0].getWidth()/2)) *
 				(centerX - (super.x + super.images[0].getWidth()/2)) +
 				(centerY - (super.y + super.images[0].getHeight()/2)) *
@@ -50,6 +51,10 @@ public class Ship extends Enemy{
 		thetaOrbit = Math.atan2(centerY - super.y + super.images[0].getHeight()/2, centerX - super.y + super.images[0].getWidth()/2);
 	}
 	
+	
+	/**
+	 * Updates the Ship's deltas
+	 */
 	@Override
 	public void update() {
 		super.update();
@@ -66,6 +71,10 @@ public class Ship extends Enemy{
 	}
 	
 	
+	/**
+	 * Spawns an Enemy Bullet
+	 * @return		A Bullet object
+	 */
 	public Bullet fire() {
 		Bullet shot = null;
 		if (delay > 0) {
@@ -83,6 +92,12 @@ public class Ship extends Enemy{
 		return shot;
 	}
 	
+	
+	/**
+	 * Updates the position of the Player for the Ship to fire at
+	 * @param tx		Target x position
+	 * @param ty		Target y position
+	 */
 	public void getTarget(int tx, int ty) {
 		targetX = tx;
 		targetY = ty;
@@ -94,6 +109,11 @@ public class Ship extends Enemy{
 	}
 	
 	
+	/**
+	 * Draws image to Graphics object
+	 * 
+	 * @param g		Graphics object to draw on
+	 */
 	@Override
 	public void draw(Graphics2D g) {
 		g.drawImage(images[0], ImageLoader.getRotation(thetaShip, images[0]), x, y);
