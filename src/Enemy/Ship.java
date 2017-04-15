@@ -9,7 +9,7 @@ import arcadia.Game;
 
 public class Ship extends Enemy{
 
-	private final int turn = 5;
+//	private final int turn = 5;
 	private final int shotDelay = 37;
 	
 	private int targetX, targetY, radius, centerX, centerY;
@@ -82,8 +82,8 @@ public class Ship extends Enemy{
 		}
 		else {
 			delay = shotDelay;
-			int myX = (int) (super.x + super.images[0].getWidth()/2 + (50 * Math.sin(thetaShip)));
-			int myY = (int) (super.y + super.images[0].getHeight()/2 + (50 * Math.cos(thetaShip)));
+//			int myX = (int) (super.x + super.images[0].getWidth()/2 + (50 * Math.sin(thetaShip)));
+//			int myY = (int) (super.y + super.images[0].getHeight()/2 + (50 * Math.cos(thetaShip)));
 			shot = new Bullet(/*myX/*/super.x + super.images[0].getWidth()/2/**/,
 					/*myY/*/super.y + super.images[0].getHeight()/2/**/, thetaShip, false);
 			//System.out.println(Math.toDegrees(thetaShip);

@@ -223,6 +223,7 @@ public class Player {
 	 * @param ring
 	 * 		Ring object the Player is on
 	 */
+/*
 	private void shipRightOnRing(int seg, Ring ring){
 		seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 		if(ring.ring[seg].health==0){
@@ -235,7 +236,7 @@ public class Player {
 			}
 		}
 	}
-
+*/
 	/**
 	 * Currently Unused.
 	 * Calculates if the Player can move left on the Ring
@@ -245,6 +246,7 @@ public class Player {
 	 * @param ring
 	 * 		Ring object the Player is on
 	 */
+/*
 	private void shipLeftOnRing(int seg, Ring ring){
 		seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
 		if(ring.ring[seg].health==0){
@@ -257,7 +259,7 @@ public class Player {
 			}
 		}
 	}
-
+*/
 	/**
 	 * Updates the Player's position based on input and also fires weapons.
 	 * 
