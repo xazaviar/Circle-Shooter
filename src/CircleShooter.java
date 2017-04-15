@@ -29,7 +29,7 @@ public class CircleShooter extends Game{
 			{{eType.ASTEROID_XL.ordinal(),10,50}},
 			//Round 2
 			{{eType.ASTEROID_L.ordinal(),12,50},
-			 {eType.SHIP.ordinal(),400,100}},
+			 {eType.SHIP.ordinal(),4,100}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
@@ -541,6 +541,7 @@ public class CircleShooter extends Game{
 			this.rStart = true;
 			this.rEnd = false;
 			this.canPlayEndR = true;
+			this.player.speedUpFiring();
 		}else if(this.roundOverCount < this.MAX_roundOverCount) this.rEnd = true;
 		
 		//Check for game Restart
@@ -594,13 +595,13 @@ public class CircleShooter extends Game{
 	
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
-			g.drawImage(bombAmmo, null, WIDTH - 60, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 50, 60);
 		}
 		if( player.getBombs() > 1 ){
-			g.drawImage(bombAmmo, null, WIDTH - 110, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 100, 60);
 		}
 		if( player.getBombs() > 0 ){
-			g.drawImage(bombAmmo, null, WIDTH - 160, 50);
+			g.drawImage(bombAmmo, null, WIDTH - 150, 60);
 		}
 	}
 	

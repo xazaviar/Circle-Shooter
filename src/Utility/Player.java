@@ -26,6 +26,8 @@ public class Player {
 	private int animState;			//Which sprite to use
 
 	private int shootDelay;
+	private final int min_shootDelay = 5;
+	private int currentDelay = 10;
 	private int bombs;
 	private int bombDelay;
 
@@ -73,6 +75,7 @@ public class Player {
 		bombs = 3;
 		bombDelay = 30;
 		lives = 3;
+		currentDelay = 10;
 	}
 
 	public int getX(){
@@ -102,6 +105,7 @@ public class Player {
 
 	public void loseLife(){
 		if( lives > 0) lives--;
+		speedUpFiring();
 	}
 
 	public void respawn(){
@@ -116,6 +120,11 @@ public class Player {
 		return invTime;
 	}
 
+	public void speedUpFiring(){
+		if(currentDelay > min_shootDelay)
+			currentDelay--;
+	}
+	
 	/*
 	 * Toggles between engine sprites
 	 */
@@ -164,10 +173,14 @@ public class Player {
 
 		//PRESSING LEFT
 		if( input.pressed(Button.L)){
-			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
-			if(speed != MAX_SPEED) speed++;
+			if(speed < 0) speed = 0;
+			if(speed < MAX_SPEED) speed++;
+			double tTest =  theta + Math.toRadians(speed);
+			int xTest = (int)(xOrigin + radius * Math.cos(tTest));
+			int yTest = (int)(yOrigin + radius * Math.sin(tTest));
+			int seg = Calc.shipOnRing(new Point(xTest,yTest), this.size, ring);
 			//System.out.println("LEFT --> RING: "+ring.ring.length+" || seg: "+seg);
-			if(ring.ring[(seg+1)%ring.ring.length].health!=0){
+			if(ring.ring[(seg)%ring.ring.length].health!=0){
 				theta = theta + Math.toRadians(speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
 				yPos = (int)(yOrigin + radius * Math.sin(theta));
@@ -178,15 +191,19 @@ public class Player {
 				}
 
 				//Adjust if no longer on ring
-				shipRightOnRing(seg, ring);
+				//shipRightOnRing(seg, ring);
 			}
 		}
 		//PRESSING RIGHT
 		else if( input.pressed(Button.R)){
-			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
-			if(speed != -MAX_SPEED) speed--;
+			if(speed > 0) speed = 0;
+			if(speed > -MAX_SPEED) speed--;
+			double tTest =  theta + Math.toRadians(speed);
+			int xTest = (int)(xOrigin + radius * Math.cos(tTest));
+			int yTest = (int)(yOrigin + radius * Math.sin(tTest));
+			int seg = Calc.shipOnRing(new Point(xTest,yTest), this.size, ring);
 			//System.out.println("RIGHT--> RING: "+ring.ring.length+" || seg: "+seg);
-			if(ring.ring[seg].health!=0){
+			if(ring.ring[(seg>-1?seg:ring.ring.length-1)].health!=0){
 				theta = theta + Math.toRadians(speed);
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
 				yPos = (int)(yOrigin + radius * Math.sin(theta));
@@ -197,48 +214,55 @@ public class Player {
 				}
 
 				//Adjust if no longer on ring
-				shipLeftOnRing(seg, ring);
+				//shipLeftOnRing(seg, ring);
 			}
 		}
 		
 		//NO MOVEMENT
 		else{
-			//Drifting Right
-			int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
-			if(speed < 0){
-				speed++;
-				if(ring.ring[seg].health!=0){
-					theta = theta + Math.toRadians(speed);
-					xPos = (int)(xOrigin + radius * Math.cos(theta));
-					yPos = (int)(yOrigin + radius * Math.sin(theta));
-					if( animState == 0 || animState == 1 ){
-						toggleState();
-					} else {
-						animState = 0;
-					}
-					
-					shipLeftOnRing(seg, ring);
-				}
-			}
-			//Drifting Left
-			else if(speed > 0){
-				speed--;
-				if(ring.ring[(seg+1)%ring.ring.length].health!=0){
-					theta = theta + Math.toRadians(speed);
-					xPos = (int)(xOrigin + radius * Math.cos(theta));
-					yPos = (int)(yOrigin + radius * Math.sin(theta));
-					if( animState == 0 || animState == 1 ){
-						toggleState();
-					} else {
-						animState = 0;
-					}
-					
-					//Adjust if no longer on ring
-					shipRightOnRing(seg, ring);
-				}
-			}
-			//No movement
-			else {
+//			//Drifting Right
+//			if(speed < 0){
+//				speed++;
+//				double tTest =  theta + Math.toRadians(speed);
+//				int xTest = (int)(xOrigin + radius * Math.cos(tTest));
+//				int yTest = (int)(yOrigin + radius * Math.sin(tTest));
+//				int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+//				if(ring.ring[seg].health!=0){
+//					theta = theta + Math.toRadians(speed);
+//					xPos = (int)(xOrigin + radius * Math.cos(theta));
+//					yPos = (int)(yOrigin + radius * Math.sin(theta));
+//					if( animState == 0 || animState == 1 ){
+//						toggleState();
+//					} else {
+//						animState = 0;
+//					}
+//					
+//					//shipLeftOnRing(seg, ring);
+//				}
+//			}
+//			//Drifting Left
+//			else if(speed > 0){
+//				speed--;
+//				double tTest =  theta + Math.toRadians(speed);
+//				int xTest = (int)(xOrigin + radius * Math.cos(tTest));
+//				int yTest = (int)(yOrigin + radius * Math.sin(tTest));
+//				int seg = Calc.shipOnRing(new Point(this.xPos,this.yPos), this.size, ring);
+//				if(ring.ring[(seg+1)%ring.ring.length].health!=0){
+//					theta = theta + Math.toRadians(speed);
+//					xPos = (int)(xOrigin + radius * Math.cos(theta));
+//					yPos = (int)(yOrigin + radius * Math.sin(theta));
+//					if( animState == 0 || animState == 1 ){
+//						toggleState();
+//					} else {
+//						animState = 0;
+//					}
+//					
+//					//Adjust if no longer on ring
+//					//shipRightOnRing(seg, ring);
+//				}
+//			}
+//			//No movement
+//			else {
 				xPos = (int)(xOrigin + radius * Math.cos(theta));
 				yPos = (int)(yOrigin + radius * Math.sin(theta));
 				if( animState == 0 || animState == 1 ){
@@ -246,7 +270,7 @@ public class Player {
 				} else {
 					animState = 0;
 				}
-			}
+//			}
 			
 		}
 		
@@ -262,7 +286,7 @@ public class Player {
 		}
 		//Shoot your gun
 		else if( input.pressed(Button.U) && shootDelay <= 0){
-			shootDelay = 5;
+			shootDelay = this.currentDelay;
 			return new Bullet(xPos, yPos, theta, true);
 		}
 		if( shootDelay > 0) shootDelay--;
