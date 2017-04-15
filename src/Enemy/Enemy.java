@@ -2,15 +2,16 @@ package Enemy;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import arcadia.Game;
 
 public class Enemy {
 
 	public String name;
-	public BufferedImage images[] = new BufferedImage[2];
+	public BufferedImage images[] = new BufferedImage[4];
 	public int x, y, width, height;
-	protected int dx, dy;					// Delta x and y
+	protected double dx, dy, px, py;					// Delta x and y
 	protected int hp, damage;
 	protected static Game game = null;
 	public boolean alive;
@@ -45,21 +46,25 @@ public class Enemy {
 	 * Updates the x,y of the Enemy
 	 */
 	protected void move() {
-		x += dx;
-		y += dy;
+		px += dx;
+		py += dy;
+		x = (int) px;
+		y = (int) py;
 	}
 	
 	
-	protected void damage(int d) {
-		if ((hp -= d) == 0) {
-			die();
+	public ArrayList<Enemy> damage(int d) {
+		if ((hp -= d) <= 0) {
+			return die();
 		}
-		
+		return new ArrayList<Enemy>();
 	}
 	
 	
-	protected void die() {
+	public ArrayList<Enemy> die() {
 		alive = false;
+		
+		return new ArrayList<Enemy>();
 	}
 	
 
