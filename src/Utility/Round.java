@@ -4,6 +4,13 @@ import java.awt.Point;
 
 import Enemy.*;
 
+/**
+ * Contains Round logic determining which enemies
+ * spawn and at what rates.
+ * 
+ * @author Joseph Ryan
+ *
+ */
 public class Round {
 	
 	//Received Variables

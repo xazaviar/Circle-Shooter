@@ -8,6 +8,8 @@ import javax.sound.sampled.*;
  * the tutorial found here
  * https://docs.oracle.com/javase/tutorial/sound/converters.html
  * 
+ * DEPRECATED CODE DO NOT USE
+ * 
  * @author Matt and smol Joe
  *
  */

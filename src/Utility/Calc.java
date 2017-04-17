@@ -3,8 +3,15 @@ package Utility;
 import java.awt.Point;
 import java.util.Random;
 
-import Utility.Ring.RingSegment;
+//import Utility.Ring.RingSegment;
 
+/**
+ * Class of static helper methods for Ring calculations regarding
+ * collisions and Player movement.
+ * 
+ * @author Joseph Ryan
+ *
+ */
 public abstract class Calc {
 
 	public static int randInt(int min, int max) {

@@ -19,6 +19,13 @@ import arcadia.Sound;
 import Enemy.*;
 import Utility.*;
 
+/**
+ * Handles all game functions including initialization, ticks, and input.
+ * Uses Arcadia.
+ * 
+ * @author Comet-Kaze team
+ *
+ */
 public class CircleShooter extends Game{
 
 	final int c_size = 500;	//The size of the circle
@@ -26,10 +33,10 @@ public class CircleShooter extends Game{
 	//Round Variables
 	int[][][] lists = {
 			//Round 1
-			{{eType.ASTEROID_XL.ordinal(),10,50}},
+			{{eType.ASTEROID_XL.ordinal(),10,25}},
 			//Round 2
-			{{eType.ASTEROID_L.ordinal(),12,50},
-			 {eType.SHIP.ordinal(),4,100}},
+			{{eType.ASTEROID_L.ordinal(),12,25},
+			 {eType.SHIP.ordinal(),4,75}},
 			//Round 3
 			{{eType.SHIP.ordinal(),20,100}},
 			//Round 4
@@ -57,15 +64,15 @@ public class CircleShooter extends Game{
 			 {eType.SHIP.ordinal(),60,100}}
 	};
 					 		//	BGM		Score 	spawnRate 	spawnCap 	refresh		list 		center 						 	 range
-	Round[] rounds = {new Round("bgm",	500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm",	1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm2",	2000,	20,			5, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm2",	4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm",	8000,	15,			10, 		false,		lists[4], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm",	10000,	15,			10, 		true,		lists[5], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm2",	20000,	10,			15, 		false,		lists[6], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("bgm2",	30000,	7,			20, 		true,		lists[7], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4),
-					  new Round("swi",	50000,	3,			30, 		true,		lists[8], 	new Point((WIDTH/2), (HEIGHT/2)),c_size/4)};
+	Round[] rounds = {new Round("bgm",	500,	30,			3, 			false,		lists[0], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm",	1000,	30,			4, 			true,		lists[1], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm2",	2000,	30,			4, 			false,		lists[2], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm2",	4000,	20,			8, 			true,		lists[3], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm",	8000,	15,			10, 		false,		lists[4], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm",	10000,	15,			10, 		true,		lists[5], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm2",	20000,	10,			15, 		false,		lists[6], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("bgm2",	30000,	7,			20, 		true,		lists[7], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5),
+					  new Round("swi",	50000,	3,			30, 		true,		lists[8], 	new Point((WIDTH/2), (HEIGHT/2)),3*c_size/5)};
 	int roundIndex = 0;
 	int roundCount = 1;
 	double growth = 1.5;
@@ -135,6 +142,9 @@ public class CircleShooter extends Game{
 	public CircleShooter(){
 	}
 
+	/**
+	 * Manages all actions done in a tick
+	 */
 	@Override
 	public void tick(Graphics2D g, Input input, Sound sound) {	
 		//******************************************************************
@@ -206,12 +216,12 @@ public class CircleShooter extends Game{
 					this.rounds[this.roundIndex].enemyDied();
 					collideWithPlayer();
 					
-					particles.add(new ExplosionLarge(e.x, e.y));
+					particles.add(new ExplosionLarge(e.x+e.getSize()/2, e.y+e.getSize()/2));
 				}
 				
 				//Check for ring collision
 				int rC = Calc.ringCollide(new Point(e.x,e.y), e.getSize(), ring);
-				if(rC>-1){
+				if(rC>-1 && !collide){
 					collide = true;
 					imp = true;
 					enemies.remove(ee);
@@ -219,7 +229,7 @@ public class CircleShooter extends Game{
 					this.rounds[this.roundIndex].enemyDied();
 					ring.ringSegDamage(rC);
 					
-					particles.add(new ExplosionLarge(e.x, e.y));
+					particles.add(new ExplosionLarge(e.x+e.getSize()/2, e.y+e.getSize()/2));
 				}
 				
 			}else if(e instanceof Ship){
@@ -254,7 +264,9 @@ public class CircleShooter extends Game{
 						
 						if( b instanceof Bullet){ 
 							playerBullets.remove(i);
-							this.score += e.getPoints();
+							if (!e.alive) {
+								this.score += e.getPoints();
+							}
 							i--;
 						}
 						break;
@@ -284,7 +296,7 @@ public class CircleShooter extends Game{
 				i--;
 				collide = true;
 				
-				particles.add(new ExplosionLarge(player.getX(), player.getY()));
+				particles.add(new ExplosionLarge(player.getX()+player.getSize()/2, player.getY()+player.getSize()/2));
 			}
 			
 			// Ring collision
@@ -296,7 +308,7 @@ public class CircleShooter extends Game{
 				collide = true;
 				imp = true;
 				
-				particles.add(new ExplosionLarge(b.getX(), b.getY()));
+				particles.add(new ExplosionLarge(b.getX()+b.getSize()/2, b.getY()+b.getSize()/2));
 			}
 
 			// Bullet collision
@@ -308,7 +320,7 @@ public class CircleShooter extends Game{
 					i--;
 					collide = true;
 					
-					particles.add(new ExplosionSmall(b.getX(), b.getY()));
+					particles.add(new ExplosionSmall(b.getX()+b.getSize()/2, b.getY()+b.getSize()/2));
 					
 					if (w instanceof Bullet) {
 						playerBullets.remove(j);
@@ -586,6 +598,10 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the number of lives on screen
+	 * @param g		Graphics object to draw on
+	 */
 	public void drawLives(Graphics2D g){
 		if( player.getLives() > 2 ){
 			g.drawImage(lifeFull, null, WIDTH - 60, 15);
@@ -604,6 +620,10 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Draws the number of bombs on screen
+	 * @param g		Graphics object to draw on
+	 */
 	public void drawBombs(Graphics2D g){
 		if( player.getBombs() > 2 ){
 			g.drawImage(bombAmmo, null, WIDTH - 60, 60);
@@ -616,6 +636,9 @@ public class CircleShooter extends Game{
 		}
 	}
 	
+	/**
+	 * Restarts the game, clearing enemies, resetting rounds, and respawning player
+	 */
 	public void restartGame(){
 		Round rE = new Round("swi",50000,3,30,true,lists[8],new Point((WIDTH/2),(HEIGHT/2)),c_size/4);
 		

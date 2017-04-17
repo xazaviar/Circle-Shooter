@@ -5,6 +5,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+/**
+ * Ring object which Player moves around on and contains
+ * segments which determine where the Player can move.
+ * 
+ * @author Joseph Ryan
+ *
+ */
 public class Ring {
 
 	RingSegment[] ring;
