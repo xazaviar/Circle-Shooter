@@ -1,11 +1,14 @@
 //Java Imports
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
 
 import Audio.Music;
 //Arcadia Imports
@@ -678,7 +681,22 @@ public class CircleShooter extends Game{
 	}
 	
 	public static void main(String[] args){
-		Arcadia.display(new Arcadia(new CircleShooter()));
+		Arcadia arcadia = new Arcadia(new CircleShooter());
+		arcadia.setMinimumSize(new Dimension(Game.WIDTH, Game.HEIGHT));
+		arcadia.setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
+		
+		new Thread(arcadia).start();
+		
+		JFrame frame = new JFrame("Comet-Kaze");
+		frame.add(arcadia);
+		frame.addKeyListener(arcadia);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setIconImage(ImageLoader.loadImage("resources/Images/Your_Ship_STILL.png"));
+		frame.pack();
+		frame.setVisible(true);
+		
+		//Arcadia.display(new Arcadia(new CircleShooter()));
 	}
 
 	@Override

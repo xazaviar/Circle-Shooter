@@ -9,7 +9,7 @@ import arcadia.Game;
 
 /**
  * Asteroid class that handles all Asteroid functions.
- * @author Josh
+ * @author Josh Fosdick
  *
  */
 public class Asteroid extends Enemy{

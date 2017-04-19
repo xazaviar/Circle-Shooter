@@ -8,7 +8,7 @@ import arcadia.Game;
 
 /**
  * Enemy class that handles all Enemy functions.
- * @author Josh
+ * @author Josh Fosdick
  *
  */
 public class Enemy {

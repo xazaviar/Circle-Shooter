@@ -9,7 +9,7 @@ import arcadia.Game;
 
 /**
  * Ship class that handles all Ship functions.
- * @author Josh
+ * @author Josh Fosdick
  *
  */
 public class Ship extends Enemy{

@@ -40,7 +40,7 @@ public class Ring {
 		
 		img = new BufferedImage[2];
 		img[0] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Piece.png");
-		img[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Piece_red.png");
+		img[1] = ImageLoader.loadImage("resources/Images/Resized_Resources/Resized_Piece_Red.png");
 		
 		//Create the ring and initialize all 
 		//segments to max health and give
